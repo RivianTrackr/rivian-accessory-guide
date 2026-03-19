@@ -76,27 +76,37 @@ class RAG_Admin {
 	 * @param string $hook Current admin page hook.
 	 */
 	public function enqueue_assets( $hook ) {
-		if ( ! in_array( $hook, $this->page_hooks, true ) ) {
+		// Match by page slug (most reliable) or hook suffix (fallback).
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
+		$our_pages = array( 'rag-dashboard', 'rag-accessories', 'rag-accessory-edit' );
+
+		if ( ! in_array( $page, $our_pages, true ) && ! in_array( $hook, $this->page_hooks, true ) ) {
 			return;
 		}
+
+		$css_file = RAG_PLUGIN_DIR . 'admin/css/rag-admin.css';
+		$css_ver  = file_exists( $css_file ) ? filemtime( $css_file ) : RAG_VERSION;
 
 		wp_enqueue_style(
 			'rag-admin',
 			RAG_PLUGIN_URL . 'admin/css/rag-admin.css',
 			array(),
-			RAG_VERSION
+			$css_ver
 		);
 
 		// Also load WP dashicons for empty-state icons.
 		wp_enqueue_style( 'dashicons' );
 
-		$js_suffix = file_exists( RAG_PLUGIN_DIR . 'admin/js/rag-admin.min.js' ) ? '.min' : '';
+		$js_file   = RAG_PLUGIN_DIR . 'admin/js/rag-admin.min.js';
+		$js_suffix = file_exists( $js_file ) ? '.min' : '';
+		$js_path   = RAG_PLUGIN_DIR . 'admin/js/rag-admin' . $js_suffix . '.js';
+		$js_ver    = file_exists( $js_path ) ? filemtime( $js_path ) : RAG_VERSION;
 
 		wp_enqueue_script(
 			'rag-admin',
 			RAG_PLUGIN_URL . 'admin/js/rag-admin' . $js_suffix . '.js',
 			array( 'jquery' ),
-			RAG_VERSION,
+			$js_ver,
 			true
 		);
 
