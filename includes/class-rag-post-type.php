@@ -1,6 +1,8 @@
 <?php
 /**
  * Custom Post Type and Taxonomy registration.
+ *
+ * @package Rivian_Accessory_Guide
  */
 
 defined( 'ABSPATH' ) || exit;

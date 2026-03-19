@@ -1,6 +1,8 @@
 <?php
 /**
  * Meta box for the accessory buy/affiliate link.
+ *
+ * @package Rivian_Accessory_Guide
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -28,7 +30,7 @@ class RAG_Meta_Box {
         $value = get_post_meta( $post->ID, '_rag_buy_link', true );
         wp_nonce_field( 'rag_buy_link_save', 'rag_buy_link_nonce' );
         ?>
-        <label for="rag-buy-link" style="display:block;margin-bottom:4px;">
+        <label for="rag-buy-link">
             Affiliate / Buy URL
         </label>
         <input
@@ -49,7 +51,7 @@ class RAG_Meta_Box {
             return;
         }
 
-        if ( ! wp_verify_nonce( $_POST['rag_buy_link_nonce'], 'rag_buy_link_save' ) ) {
+        if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rag_buy_link_nonce'] ) ), 'rag_buy_link_save' ) ) {
             return;
         }
 

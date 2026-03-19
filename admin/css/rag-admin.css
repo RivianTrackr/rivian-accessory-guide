@@ -1,0 +1,16 @@
+/**
+ * Rivian Accessory Guide — Admin Styles
+ *
+ * @package Rivian_Accessory_Guide
+ */
+
+#rag_buy_link label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+#rag_buy_link input[type="url"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
