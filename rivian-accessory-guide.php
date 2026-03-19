@@ -41,20 +41,11 @@ function rag_init() {
 add_action( 'init', 'rag_init' );
 
 /**
- * Register the meta box.
+ * Boot the custom admin panel.
  */
-function rag_add_meta_boxes() {
-	RAG_Meta_Box::add();
+if ( is_admin() ) {
+	new RAG_Admin();
 }
-add_action( 'add_meta_boxes', 'rag_add_meta_boxes' );
-
-/**
- * Save meta box data.
- */
-function rag_save_post( $post_id ) {
-	RAG_Meta_Box::save( $post_id );
-}
-add_action( 'save_post_rivian_accessory', 'rag_save_post' );
 
 /**
  * Enqueue frontend assets only when the shortcode is present.
@@ -79,22 +70,6 @@ function rag_enqueue_frontend_assets() {
 	}
 }
 add_action( 'wp_footer', 'rag_enqueue_frontend_assets' );
-
-/**
- * Enqueue admin assets on accessory edit screens.
- */
-function rag_enqueue_admin_assets( $hook ) {
-	$screen = get_current_screen();
-	if ( $screen && 'rivian_accessory' === $screen->post_type ) {
-		wp_enqueue_style(
-			'rag-admin',
-			RAG_PLUGIN_URL . 'admin/css/rag-admin.css',
-			array(),
-			RAG_VERSION
-		);
-	}
-}
-add_action( 'admin_enqueue_scripts', 'rag_enqueue_admin_assets' );
 
 /**
  * Flush rewrite rules on activation.

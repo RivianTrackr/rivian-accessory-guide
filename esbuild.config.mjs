@@ -29,6 +29,15 @@ const builds = [
         bundle: true,
         minify: true,
     },
+    // Admin JS — minified copy (jQuery wrapper, no bundling needed).
+    {
+        entryPoints: ['admin/js/rag-admin.js'],
+        outfile: 'admin/js/rag-admin.min.js',
+        bundle: false,
+        minify: true,
+        target: 'es2020',
+        drop: ['console', 'debugger'],
+    },
 ];
 
 for (const config of builds) {
