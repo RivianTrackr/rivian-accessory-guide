@@ -10,6 +10,13 @@ defined( 'ABSPATH' ) || exit;
 class RAG_Admin {
 
 	/**
+	 * Hook suffixes returned by add_menu_page / add_submenu_page.
+	 *
+	 * @var string[]
+	 */
+	private $page_hooks = array();
+
+	/**
 	 * Boot the admin panel.
 	 */
 	public function __construct() {
@@ -22,7 +29,7 @@ class RAG_Admin {
 	 * Register the top-level admin menu and submenus.
 	 */
 	public function register_menu() {
-		add_menu_page(
+		$this->page_hooks[] = add_menu_page(
 			'Accessory Guide',
 			'Accessories',
 			'manage_options',
@@ -32,7 +39,7 @@ class RAG_Admin {
 			30
 		);
 
-		add_submenu_page(
+		$this->page_hooks[] = add_submenu_page(
 			'rag-dashboard',
 			'Dashboard',
 			'Dashboard',
@@ -41,7 +48,7 @@ class RAG_Admin {
 			array( $this, 'render_dashboard' )
 		);
 
-		add_submenu_page(
+		$this->page_hooks[] = add_submenu_page(
 			'rag-dashboard',
 			'All Accessories',
 			'All Accessories',
@@ -50,7 +57,7 @@ class RAG_Admin {
 			array( $this, 'render_list' )
 		);
 
-		add_submenu_page(
+		$this->page_hooks[] = add_submenu_page(
 			'rag-dashboard',
 			'Add New Accessory',
 			'Add New',
@@ -69,8 +76,7 @@ class RAG_Admin {
 	 * @param string $hook Current admin page hook.
 	 */
 	public function enqueue_assets( $hook ) {
-		// Hook names vary: 'toplevel_page_rag-dashboard', 'accessories_page_rag-accessories', etc.
-		if ( strpos( $hook, 'rag-' ) === false && strpos( $hook, 'rag_' ) === false ) {
+		if ( ! in_array( $hook, $this->page_hooks, true ) ) {
 			return;
 		}
 
