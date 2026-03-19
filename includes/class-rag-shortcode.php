@@ -1,6 +1,8 @@
 <?php
 /**
  * Shortcode for rendering the accessory guide.
+ *
+ * @package Rivian_Accessory_Guide
  */
 
 defined( 'ABSPATH' ) || exit;

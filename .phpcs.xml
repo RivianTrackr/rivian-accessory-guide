@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="Rivian Accessory Guide">
+    <description>PHPCS rules for the Rivian Accessory Guide plugin.</description>
+
+    <file>.</file>
+    <exclude-pattern>/vendor/</exclude-pattern>
+    <exclude-pattern>/node_modules/</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    </rule>
+
+    <config name="minimum_supported_wp_version" value="6.0"/>
+    <config name="text_domain" value="rivian-accessory-guide"/>
+</ruleset>
