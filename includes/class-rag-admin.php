@@ -69,11 +69,10 @@ class RAG_Admin {
 	 * @param string $hook Current admin page hook.
 	 */
 	public function enqueue_assets( $hook ) {
-		if ( strpos( $hook, 'rag-' ) === false ) {
+		// Hook names vary: 'toplevel_page_rag-dashboard', 'accessories_page_rag-accessories', etc.
+		if ( strpos( $hook, 'rag-' ) === false && strpos( $hook, 'rag_' ) === false ) {
 			return;
 		}
-
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_enqueue_style(
 			'rag-admin',
@@ -82,9 +81,14 @@ class RAG_Admin {
 			RAG_VERSION
 		);
 
+		// Also load WP dashicons for empty-state icons.
+		wp_enqueue_style( 'dashicons' );
+
+		$js_suffix = file_exists( RAG_PLUGIN_DIR . 'admin/js/rag-admin.min.js' ) ? '.min' : '';
+
 		wp_enqueue_script(
 			'rag-admin',
-			RAG_PLUGIN_URL . 'admin/js/rag-admin' . $suffix . '.js',
+			RAG_PLUGIN_URL . 'admin/js/rag-admin' . $js_suffix . '.js',
 			array( 'jquery' ),
 			RAG_VERSION,
 			true
