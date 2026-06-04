@@ -31,6 +31,15 @@ if ( $is_edit ) {
 	}
 }
 
+// Current vehicles (multiple).
+$current_vehicles = array();
+if ( $is_edit ) {
+	$v_terms = wp_get_object_terms( $editing_id, 'rivian_accessory_vehicle', array( 'fields' => 'ids' ) );
+	if ( ! is_wp_error( $v_terms ) ) {
+		$current_vehicles = array_map( 'intval', $v_terms );
+	}
+}
+
 // Current featured image.
 $thumbnail_id  = $is_edit ? get_post_thumbnail_id( $editing_id ) : 0;
 $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url( $thumbnail_id, 'medium' ) : '';
@@ -42,6 +51,17 @@ $categories = get_terms( array(
 ) );
 if ( is_wp_error( $categories ) ) {
 	$categories = array();
+}
+
+// All vehicles for the multi-select.
+$vehicles = get_terms( array(
+	'taxonomy'   => 'rivian_accessory_vehicle',
+	'hide_empty' => false,
+	'orderby'    => 'name',
+	'order'      => 'ASC',
+) );
+if ( is_wp_error( $vehicles ) ) {
+	$vehicles = array();
 }
 
 // Notices.
@@ -97,6 +117,24 @@ $message = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) :
 								<option value="<?php echo esc_attr( $cat->term_id ); ?>" <?php selected( $current_cat, $cat->term_id ); ?>><?php echo esc_html( $cat->name ); ?></option>
 							<?php endforeach; ?>
 						</select>
+					</div>
+					<div class="rag-field-row">
+						<div class="rag-field-label-row">
+							<label class="rag-field-label">Vehicles</label>
+						</div>
+						<p class="rag-field-description">Select every vehicle this accessory fits. Leave all unchecked if it applies to any Rivian.</p>
+						<?php if ( empty( $vehicles ) ) : ?>
+							<p class="rag-field-description">No vehicles yet. <a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-vehicles' ) ); ?>">Add a vehicle</a> first.</p>
+						<?php else : ?>
+							<div class="rag-checkbox-grid">
+								<?php foreach ( $vehicles as $vehicle ) : ?>
+									<label class="rag-checkbox-item">
+										<input type="checkbox" name="accessory_vehicles[]" value="<?php echo esc_attr( $vehicle->term_id ); ?>" <?php checked( in_array( (int) $vehicle->term_id, $current_vehicles, true ) ); ?>>
+										<span><?php echo esc_html( $vehicle->name ); ?></span>
+									</label>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>

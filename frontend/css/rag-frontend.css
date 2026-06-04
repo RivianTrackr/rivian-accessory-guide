@@ -68,9 +68,49 @@
     line-height: 1.5;
 }
 
+/* --- Vehicle Filter Bar --- */
+.rag-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.rag-filter-chip {
+    appearance: none;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 8px 14px;
+    border-radius: 9999px;
+    border: 1px solid var(--rag-border);
+    background: var(--rag-bg-primary);
+    color: var(--rag-text-secondary);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.rag-filter-chip:hover,
+.rag-filter-chip:focus-visible {
+    border-color: var(--rag-accent);
+    color: var(--rag-text-heading);
+    outline: none;
+}
+
+.rag-filter-chip.is-active {
+    background: var(--rag-accent);
+    border-color: var(--rag-accent);
+    color: var(--rag-text-on-accent);
+}
+
 /* --- Section --- */
 .rag-section {
     margin-bottom: 28px;
+}
+
+.rag-section[hidden] {
+    display: none;
 }
 
 .rag-section-title {
@@ -164,6 +204,29 @@ a.rag-card:active {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* --- Card Vehicle Badges --- */
+.rag-card-vehicles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.rag-vehicle-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--rag-accent);
+    background: color-mix(in srgb, var(--rag-accent) 14%, transparent);
+}
+
+.rag-card[hidden] {
+    display: none;
 }
 
 /* --- Card Arrow --- */

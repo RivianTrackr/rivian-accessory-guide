@@ -75,6 +75,15 @@ class RAG_Admin {
 			array( $this, 'render_categories' )
 		);
 
+		$this->page_hooks[] = add_submenu_page(
+			'rag-dashboard',
+			'Vehicles',
+			'Vehicles',
+			'manage_options',
+			'rag-vehicles',
+			array( $this, 'render_vehicles' )
+		);
+
 		// Hide the default CPT menu.
 		remove_menu_page( 'edit.php?post_type=rivian_accessory' );
 	}
@@ -87,7 +96,7 @@ class RAG_Admin {
 	public function enqueue_assets( $hook ) {
 		// Match by page slug (most reliable) or hook suffix (fallback).
 		$page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
-		$our_pages = array( 'rag-dashboard', 'rag-accessories', 'rag-accessory-edit', 'rag-categories' );
+		$our_pages = array( 'rag-dashboard', 'rag-accessories', 'rag-accessory-edit', 'rag-categories', 'rag-vehicles' );
 
 		if ( ! in_array( $page, $our_pages, true ) && ! in_array( $hook, $this->page_hooks, true ) ) {
 			return;
@@ -145,6 +154,14 @@ class RAG_Admin {
 		if ( isset( $_GET['action'] ) && 'delete_category' === $_GET['action'] && isset( $_GET['term_id'] ) ) {
 			$this->handle_category_delete();
 		}
+
+		if ( isset( $_POST['rag_vehicle_save'] ) ) {
+			$this->handle_vehicle_save();
+		}
+
+		if ( isset( $_GET['action'] ) && 'delete_vehicle' === $_GET['action'] && isset( $_GET['term_id'] ) ) {
+			$this->handle_vehicle_delete();
+		}
 	}
 
 	// --- Page Renderers ---
@@ -187,6 +204,16 @@ class RAG_Admin {
 			return;
 		}
 		require_once RAG_PLUGIN_DIR . 'admin/views/categories.php';
+	}
+
+	/**
+	 * Render the vehicles management page.
+	 */
+	public function render_vehicles() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		require_once RAG_PLUGIN_DIR . 'admin/views/vehicles.php';
 	}
 
 	// --- Action Handlers ---
@@ -241,6 +268,12 @@ class RAG_Admin {
 		} else {
 			wp_set_object_terms( $post_id, array(), 'rivian_accessory_category' );
 		}
+
+		// Save vehicles (multiple allowed).
+		$vehicle_ids = isset( $post['accessory_vehicles'] ) && is_array( $post['accessory_vehicles'] )
+			? array_filter( array_map( 'intval', $post['accessory_vehicles'] ) )
+			: array();
+		wp_set_object_terms( $post_id, $vehicle_ids, 'rivian_accessory_vehicle' );
 
 		// Save featured image.
 		$thumbnail_id = intval( $post['featured_image_id'] ?? 0 );
@@ -349,6 +382,66 @@ class RAG_Admin {
 
 		wp_delete_term( $term_id, 'rivian_accessory_category' );
 		wp_redirect( admin_url( 'admin.php?page=rag-categories&message=deleted' ) );
+		exit;
+	}
+
+	/**
+	 * Create or update a vehicle.
+	 */
+	private function handle_vehicle_save() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Unauthorized' );
+		}
+
+		check_admin_referer( 'rag_vehicle_save', 'rag_vehicle_nonce' );
+
+		$post        = wp_unslash( $_POST );
+		$editing_id  = intval( $post['editing_id'] ?? 0 );
+		$name        = sanitize_text_field( $post['vehicle_name'] ?? '' );
+		$slug        = sanitize_title( $post['vehicle_slug'] ?? '' );
+		$description = sanitize_textarea_field( $post['vehicle_description'] ?? '' );
+
+		if ( empty( $name ) ) {
+			wp_redirect( admin_url( 'admin.php?page=rag-vehicles&message=error' ) );
+			exit;
+		}
+
+		$args = array( 'description' => $description );
+		if ( $slug ) {
+			$args['slug'] = $slug;
+		}
+
+		if ( $editing_id > 0 ) {
+			$args['name'] = $name;
+			$result = wp_update_term( $editing_id, 'rivian_accessory_vehicle', $args );
+			$msg    = 'updated';
+		} else {
+			$result = wp_insert_term( $name, 'rivian_accessory_vehicle', $args );
+			$msg    = 'added';
+		}
+
+		if ( is_wp_error( $result ) ) {
+			wp_redirect( admin_url( 'admin.php?page=rag-vehicles&message=error' ) );
+			exit;
+		}
+
+		wp_redirect( admin_url( 'admin.php?page=rag-vehicles&message=' . $msg ) );
+		exit;
+	}
+
+	/**
+	 * Delete a vehicle.
+	 */
+	private function handle_vehicle_delete() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Unauthorized' );
+		}
+
+		$term_id = intval( $_GET['term_id'] );
+		check_admin_referer( 'rag_delete_vehicle_' . $term_id );
+
+		wp_delete_term( $term_id, 'rivian_accessory_vehicle' );
+		wp_redirect( admin_url( 'admin.php?page=rag-vehicles&message=deleted' ) );
 		exit;
 	}
 }

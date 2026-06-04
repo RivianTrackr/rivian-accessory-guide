@@ -19,6 +19,12 @@ $categories = get_terms( array(
 ) );
 $total_categories = is_wp_error( $categories ) ? 0 : count( $categories );
 
+$vehicles       = get_terms( array(
+	'taxonomy'   => 'rivian_accessory_vehicle',
+	'hide_empty' => false,
+) );
+$total_vehicles = is_wp_error( $vehicles ) ? 0 : count( $vehicles );
+
 // Count accessories with buy links.
 $with_links_query = new WP_Query( array(
 	'post_type'      => 'rivian_accessory',
@@ -97,6 +103,10 @@ $max_cat_count = ! empty( $cat_list ) ? $cat_list[0]['count'] : 1;
 		<div class="rag-stat-card">
 			<div class="rag-stat-value"><?php echo esc_html( $total_categories ); ?></div>
 			<div class="rag-stat-label">Categories</div>
+		</div>
+		<div class="rag-stat-card">
+			<div class="rag-stat-value"><?php echo esc_html( $total_vehicles ); ?></div>
+			<div class="rag-stat-label">Vehicles</div>
 		</div>
 		<div class="rag-stat-card">
 			<div class="rag-stat-value"><?php echo esc_html( $with_links ); ?></div>

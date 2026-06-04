@@ -46,6 +46,18 @@ class RAG_Shortcode {
             $categories = array();
         }
 
+        // Vehicles for the filter bar (only those with accessories attached).
+        $vehicles = get_terms( array(
+            'taxonomy'   => 'rivian_accessory_vehicle',
+            'hide_empty' => true,
+            'orderby'    => 'name',
+            'order'      => 'ASC',
+        ) );
+
+        if ( is_wp_error( $vehicles ) ) {
+            $vehicles = array();
+        }
+
         // Track IDs of accessories already displayed in a category.
         $displayed_ids = array();
 
@@ -57,6 +69,15 @@ class RAG_Shortcode {
                 <h1><?php echo esc_html( $atts['title'] ); ?></h1>
                 <p><?php echo esc_html( $atts['subtitle'] ); ?></p>
             </div>
+
+            <?php if ( ! empty( $vehicles ) ) : ?>
+                <div class="rag-filter-bar" role="group" aria-label="Filter accessories by vehicle">
+                    <button type="button" class="rag-filter-chip is-active" data-vehicle="all" aria-pressed="true">All</button>
+                    <?php foreach ( $vehicles as $vehicle ) : ?>
+                        <button type="button" class="rag-filter-chip" data-vehicle="<?php echo esc_attr( $vehicle->slug ); ?>" aria-pressed="false"><?php echo esc_html( $vehicle->name ); ?></button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
             <?php foreach ( $categories as $category ) : ?>
                 <?php
@@ -117,6 +138,8 @@ class RAG_Shortcode {
                 <p class="rag-empty">No accessories found.</p>
             <?php endif; ?>
 
+            <p class="rag-empty rag-filter-empty" hidden>No accessories match this vehicle.</p>
+
         </div>
         <?php
         return ob_get_clean();
@@ -131,6 +154,13 @@ class RAG_Shortcode {
         $description = wp_trim_words( get_the_content(), 20, '&hellip;' );
         $has_link    = ! empty( $buy_link );
 
+        // Vehicles this accessory fits.
+        $vehicle_terms = wp_get_object_terms( $post_id, 'rivian_accessory_vehicle' );
+        if ( is_wp_error( $vehicle_terms ) ) {
+            $vehicle_terms = array();
+        }
+        $vehicle_slugs = wp_list_pluck( $vehicle_terms, 'slug' );
+
         $tag        = $has_link ? 'a' : 'div';
         $link_attrs = $has_link
             ? ' href="' . esc_url( $buy_link ) . '" target="_blank" rel="noopener noreferrer"'
@@ -138,7 +168,7 @@ class RAG_Shortcode {
 
         ob_start();
         ?>
-        <<?php echo $tag; ?> class="rag-card"<?php echo $link_attrs; ?>>
+        <<?php echo $tag; ?> class="rag-card"<?php echo $link_attrs; ?> data-vehicles="<?php echo esc_attr( implode( ' ', $vehicle_slugs ) ); ?>">
             <div class="rag-card-image">
                 <?php if ( has_post_thumbnail( $post_id ) ) : ?>
                     <?php echo get_the_post_thumbnail( $post_id, 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
@@ -154,6 +184,13 @@ class RAG_Shortcode {
                 <h3 class="rag-card-title"><?php echo esc_html( $title ); ?></h3>
                 <?php if ( $description ) : ?>
                     <p class="rag-card-desc"><?php echo esc_html( $description ); ?></p>
+                <?php endif; ?>
+                <?php if ( ! empty( $vehicle_terms ) ) : ?>
+                    <div class="rag-card-vehicles">
+                        <?php foreach ( $vehicle_terms as $vehicle ) : ?>
+                            <span class="rag-vehicle-badge"><?php echo esc_html( $vehicle->name ); ?></span>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
             <?php if ( $has_link ) : ?>
