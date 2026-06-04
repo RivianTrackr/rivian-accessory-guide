@@ -103,7 +103,7 @@ if ( is_wp_error( $categories ) ) {
 		<div class="rag-card">
 			<div class="rag-card-header">
 				<h2>Existing Categories</h2>
-				<p><?php echo esc_html( count( $categories ) ); ?> category<?php echo count( $categories ) !== 1 ? 'ies' : ''; ?> total</p>
+				<p><?php echo esc_html( count( $categories ) ); ?> <?php echo count( $categories ) !== 1 ? 'categories' : 'category'; ?> total</p>
 			</div>
 
 			<?php if ( empty( $categories ) ) : ?>

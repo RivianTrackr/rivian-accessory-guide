@@ -14,6 +14,7 @@ class RAG_Post_Type {
      */
     public static function register() {
         self::register_taxonomy();
+        self::register_vehicle_taxonomy();
         self::register_post_type();
     }
 
@@ -43,6 +44,36 @@ class RAG_Post_Type {
             'show_admin_column' => true,
             'show_in_rest'      => true,
             'rewrite'           => array( 'slug' => 'accessory-category' ),
+        ) );
+    }
+
+    /**
+     * Register the rivian_accessory_vehicle taxonomy.
+     *
+     * Non-hierarchical so a single accessory can be assigned to several
+     * vehicles (e.g. fits both the R1T and R1S).
+     */
+    private static function register_vehicle_taxonomy() {
+        $labels = array(
+            'name'              => 'Vehicles',
+            'singular_name'     => 'Vehicle',
+            'search_items'      => 'Search Vehicles',
+            'all_items'         => 'All Vehicles',
+            'edit_item'         => 'Edit Vehicle',
+            'update_item'       => 'Update Vehicle',
+            'add_new_item'      => 'Add New Vehicle',
+            'new_item_name'     => 'New Vehicle Name',
+            'menu_name'         => 'Vehicles',
+        );
+
+        register_taxonomy( 'rivian_accessory_vehicle', 'rivian_accessory', array(
+            'labels'            => $labels,
+            'hierarchical'      => false,
+            'public'            => true,
+            'show_ui'           => true,
+            'show_admin_column' => true,
+            'show_in_rest'      => true,
+            'rewrite'           => array( 'slug' => 'accessory-vehicle' ),
         ) );
     }
 

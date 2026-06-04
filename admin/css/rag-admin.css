@@ -221,6 +221,36 @@
     max-width: 120px;
 }
 
+/* Checkbox grid (multi-select fields, e.g. vehicles) */
+.rag-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    max-width: 100%;
+}
+
+.rag-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid var(--rag-border);
+    border-radius: var(--rag-radius-input);
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.rag-checkbox-item:hover {
+    border-color: var(--rag-action-primary);
+    background: var(--rag-bg-light);
+}
+
+.rag-checkbox-item input {
+    margin: 0;
+    flex-shrink: 0;
+}
+
 /* ==========================================================================
    Buttons
    ========================================================================== */

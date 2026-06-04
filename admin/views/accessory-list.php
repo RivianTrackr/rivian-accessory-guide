@@ -22,6 +22,7 @@ $notices = array(
 // Search and filters.
 $search          = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
 $filter_category = isset( $_GET['filter_category'] ) ? intval( $_GET['filter_category'] ) : 0;
+$filter_vehicle  = isset( $_GET['filter_vehicle'] ) ? intval( $_GET['filter_vehicle'] ) : 0;
 $paged           = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
 $per_page        = 20;
 
@@ -38,13 +39,22 @@ if ( $search ) {
 	$query_args['s'] = $search;
 }
 
+$tax_query = array();
 if ( $filter_category > 0 ) {
-	$query_args['tax_query'] = array(
-		array(
-			'taxonomy' => 'rivian_accessory_category',
-			'terms'    => $filter_category,
-		),
+	$tax_query[] = array(
+		'taxonomy' => 'rivian_accessory_category',
+		'terms'    => $filter_category,
 	);
+}
+if ( $filter_vehicle > 0 ) {
+	$tax_query[] = array(
+		'taxonomy' => 'rivian_accessory_vehicle',
+		'terms'    => $filter_vehicle,
+	);
+}
+if ( ! empty( $tax_query ) ) {
+	$tax_query['relation'] = 'AND';
+	$query_args['tax_query'] = $tax_query;
 }
 
 $query       = new WP_Query( $query_args );
@@ -60,6 +70,15 @@ $categories = get_terms( array(
 ) );
 if ( is_wp_error( $categories ) ) {
 	$categories = array();
+}
+
+// Vehicles for filter dropdown.
+$vehicles = get_terms( array(
+	'taxonomy'   => 'rivian_accessory_vehicle',
+	'hide_empty' => false,
+) );
+if ( is_wp_error( $vehicles ) ) {
+	$vehicles = array();
 }
 ?>
 
@@ -88,8 +107,14 @@ if ( is_wp_error( $categories ) ) {
 					<option value="<?php echo esc_attr( $cat->term_id ); ?>" <?php selected( $filter_category, $cat->term_id ); ?>><?php echo esc_html( $cat->name ); ?></option>
 				<?php endforeach; ?>
 			</select>
+			<select name="filter_vehicle" style="min-width:160px;">
+				<option value="">All Vehicles</option>
+				<?php foreach ( $vehicles as $vehicle ) : ?>
+					<option value="<?php echo esc_attr( $vehicle->term_id ); ?>" <?php selected( $filter_vehicle, $vehicle->term_id ); ?>><?php echo esc_html( $vehicle->name ); ?></option>
+				<?php endforeach; ?>
+			</select>
 			<button type="submit" class="rag-btn rag-btn-secondary">Filter</button>
-			<?php if ( $search || $filter_category ) : ?>
+			<?php if ( $search || $filter_category || $filter_vehicle ) : ?>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-accessories' ) ); ?>" class="rag-btn rag-btn-secondary" style="text-decoration:none;">Clear</a>
 			<?php endif; ?>
 		</div>
@@ -135,6 +160,7 @@ if ( is_wp_error( $categories ) ) {
 							<th class="column-image">Image</th>
 							<th>Title</th>
 							<th>Category</th>
+							<th>Vehicles</th>
 							<th>Buy Link</th>
 							<th>Date</th>
 						</tr>
@@ -142,7 +168,7 @@ if ( is_wp_error( $categories ) ) {
 					<tbody>
 						<?php if ( empty( $accessories ) ) : ?>
 							<tr>
-								<td colspan="6">
+								<td colspan="7">
 									<div class="rag-empty-state">
 										<span class="dashicons dashicons-car"></span>
 										<h3>No accessories found</h3>
@@ -153,10 +179,12 @@ if ( is_wp_error( $categories ) ) {
 						<?php else : ?>
 							<?php foreach ( $accessories as $accessory ) : ?>
 								<?php
-								$acc_id       = $accessory->ID;
-								$acc_cats     = wp_get_object_terms( $acc_id, 'rivian_accessory_category', array( 'fields' => 'names' ) );
-								$acc_cat_name = ! empty( $acc_cats ) && ! is_wp_error( $acc_cats ) ? implode( ', ', $acc_cats ) : '—';
-								$acc_link     = get_post_meta( $acc_id, '_rag_buy_link', true );
+								$acc_id        = $accessory->ID;
+								$acc_cats      = wp_get_object_terms( $acc_id, 'rivian_accessory_category', array( 'fields' => 'names' ) );
+								$acc_cat_name  = ! empty( $acc_cats ) && ! is_wp_error( $acc_cats ) ? implode( ', ', $acc_cats ) : '—';
+								$acc_vehicles  = wp_get_object_terms( $acc_id, 'rivian_accessory_vehicle', array( 'fields' => 'names' ) );
+								$acc_veh_names = ! empty( $acc_vehicles ) && ! is_wp_error( $acc_vehicles ) ? implode( ', ', $acc_vehicles ) : '—';
+								$acc_link      = get_post_meta( $acc_id, '_rag_buy_link', true );
 								?>
 								<tr>
 									<td class="column-cb">
@@ -188,6 +216,7 @@ if ( is_wp_error( $categories ) ) {
 										</div>
 									</td>
 									<td><?php echo esc_html( $acc_cat_name ); ?></td>
+									<td><?php echo esc_html( $acc_veh_names ); ?></td>
 									<td>
 										<?php if ( $acc_link ) : ?>
 											<a href="<?php echo esc_url( $acc_link ); ?>" class="rag-link-url" target="_blank" rel="noopener noreferrer">
