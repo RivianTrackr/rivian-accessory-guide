@@ -18,7 +18,9 @@ $page_title  = $is_edit ? 'Edit Accessory' : 'Add New Accessory';
 $v = array(
 	'title'       => $is_edit ? $post->post_title : '',
 	'description' => $is_edit ? $post->post_content : '',
+	'vendor'      => $is_edit ? get_post_meta( $editing_id, '_rag_vendor', true ) : '',
 	'buy_link'    => $is_edit ? get_post_meta( $editing_id, '_rag_buy_link', true ) : '',
+	'discount'    => $is_edit ? get_post_meta( $editing_id, '_rag_discount', true ) : '',
 	'menu_order'  => $is_edit ? $post->menu_order : 0,
 );
 
@@ -109,6 +111,13 @@ $message = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) :
 					</div>
 					<div class="rag-field-row">
 						<div class="rag-field-label-row">
+							<label class="rag-field-label" for="accessory_vendor">Vendor</label>
+						</div>
+						<p class="rag-field-description">Who makes or sells this accessory. Shown on the accessory card.</p>
+						<input type="text" id="accessory_vendor" name="accessory_vendor" value="<?php echo esc_attr( $v['vendor'] ); ?>" class="rag-input-wide" placeholder="e.g. Rivian, Weathertech">
+					</div>
+					<div class="rag-field-row">
+						<div class="rag-field-label-row">
 							<label class="rag-field-label" for="accessory_category">Category</label>
 						</div>
 						<select id="accessory_category" name="accessory_category">
@@ -170,6 +179,13 @@ $message = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) :
 						</div>
 						<p class="rag-field-description">External URL where visitors can purchase this accessory.</p>
 						<input type="url" id="buy_link" name="buy_link" value="<?php echo esc_attr( $v['buy_link'] ); ?>" class="rag-input-wide" placeholder="https://example.com/product">
+					</div>
+					<div class="rag-field-row">
+						<div class="rag-field-label-row">
+							<label class="rag-field-label" for="discount">Discount</label>
+						</div>
+						<p class="rag-field-description">Optional discount this link provides. Shown as a badge on the card.</p>
+						<input type="text" id="discount" name="discount" value="<?php echo esc_attr( $v['discount'] ); ?>" class="rag-input-wide" placeholder="e.g. 10% off">
 					</div>
 					<div class="rag-field-row">
 						<div class="rag-field-label-row">
