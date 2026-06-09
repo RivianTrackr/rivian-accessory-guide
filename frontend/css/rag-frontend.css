@@ -28,7 +28,7 @@
 /* --- Container --- */
 .rag-container {
     width: 100%;
-    max-width: 100%;
+    max-width: 880px;
     margin: 0 auto;
     padding: 32px 20px 48px;
     font-family: var(--rag-font-stack);
