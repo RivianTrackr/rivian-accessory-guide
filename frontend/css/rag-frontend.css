@@ -27,7 +27,8 @@
 
 /* --- Container --- */
 .rag-container {
-    max-width: 640px;
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
     padding: 32px 20px 48px;
     font-family: var(--rag-font-stack);
@@ -187,10 +188,43 @@ a.rag-card:active {
     min-width: 0;
 }
 
+.rag-card-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 4px;
+}
+
 .rag-card-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--rag-text-heading);
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* --- Card Discount Badge --- */
+.rag-card-discount {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--rag-text-on-accent);
+    background: var(--rag-accent);
+    line-height: 1.4;
+}
+
+/* --- Card Vendor --- */
+.rag-card-vendor {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--rag-text-muted);
     margin: 0 0 4px;
     line-height: 1.3;
 }

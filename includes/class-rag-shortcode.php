@@ -150,6 +150,8 @@ class RAG_Shortcode {
      */
     private static function render_card( $post_id ) {
         $buy_link    = get_post_meta( $post_id, '_rag_buy_link', true );
+        $vendor      = get_post_meta( $post_id, '_rag_vendor', true );
+        $discount    = get_post_meta( $post_id, '_rag_discount', true );
         $title       = get_the_title( $post_id );
         $description = wp_trim_words( get_the_content(), 20, '&hellip;' );
         $has_link    = ! empty( $buy_link );
@@ -181,7 +183,15 @@ class RAG_Shortcode {
                 <?php endif; ?>
             </div>
             <div class="rag-card-content">
-                <h3 class="rag-card-title"><?php echo esc_html( $title ); ?></h3>
+                <div class="rag-card-heading">
+                    <h3 class="rag-card-title"><?php echo esc_html( $title ); ?></h3>
+                    <?php if ( $has_link && ! empty( $discount ) ) : ?>
+                        <span class="rag-card-discount"><?php echo esc_html( $discount ); ?></span>
+                    <?php endif; ?>
+                </div>
+                <?php if ( ! empty( $vendor ) ) : ?>
+                    <p class="rag-card-vendor"><?php echo esc_html( $vendor ); ?></p>
+                <?php endif; ?>
                 <?php if ( $description ) : ?>
                     <p class="rag-card-desc"><?php echo esc_html( $description ); ?></p>
                 <?php endif; ?>

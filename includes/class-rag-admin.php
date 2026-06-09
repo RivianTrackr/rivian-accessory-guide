@@ -253,12 +253,28 @@ class RAG_Admin {
 
 		$post_id = is_int( $result ) ? $result : $editing_id;
 
+		// Save vendor.
+		$vendor = sanitize_text_field( $post['accessory_vendor'] ?? '' );
+		if ( $vendor ) {
+			update_post_meta( $post_id, '_rag_vendor', $vendor );
+		} else {
+			delete_post_meta( $post_id, '_rag_vendor' );
+		}
+
 		// Save buy link.
 		$buy_link = esc_url_raw( $post['buy_link'] ?? '' );
 		if ( $buy_link ) {
 			update_post_meta( $post_id, '_rag_buy_link', $buy_link );
 		} else {
 			delete_post_meta( $post_id, '_rag_buy_link' );
+		}
+
+		// Save discount.
+		$discount = sanitize_text_field( $post['discount'] ?? '' );
+		if ( $discount ) {
+			update_post_meta( $post_id, '_rag_discount', $discount );
+		} else {
+			delete_post_meta( $post_id, '_rag_discount' );
 		}
 
 		// Save category.
