@@ -27,9 +27,8 @@
 
 /* --- Container --- */
 .rag-container {
-    width: 100%;
     max-width: 100%;
-    margin: 0 auto;
+    margin: 0 clamp(16px, 4vw, 40px);
     padding: 32px 20px 48px;
     font-family: var(--rag-font-stack);
     background: var(--rag-bg-deep);
@@ -289,8 +288,8 @@ a.rag-card:hover .rag-card-arrow {
 /* --- Responsive --- */
 @media (max-width: 480px) {
     .rag-container {
+        margin: 0 12px;
         padding: 24px 12px 40px;
-        border-radius: 0;
     }
 
     .rag-header h1 {
