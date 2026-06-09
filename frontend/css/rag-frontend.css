@@ -126,9 +126,9 @@
 
 /* --- Cards --- */
 .rag-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: 12px;
 }
 
 .rag-card {
