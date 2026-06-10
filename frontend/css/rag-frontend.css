@@ -126,15 +126,15 @@
 /* --- Cards --- */
 .rag-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
+    gap: 16px;
 }
 
 .rag-card {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 12px;
+    gap: 18px;
+    padding: 18px;
     background: var(--rag-bg-primary);
     border: 1px solid var(--rag-border);
     border-radius: var(--rag-radius-card);
@@ -161,9 +161,9 @@ a.rag-card:active {
 /* --- Card Image --- */
 .rag-card-image {
     flex-shrink: 0;
-    width: 56px;
-    height: 56px;
-    border-radius: 6px;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
     overflow: hidden;
     background: var(--rag-bg-hover);
 }
@@ -196,7 +196,7 @@ a.rag-card:active {
 }
 
 .rag-card-title {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: var(--rag-text-heading);
     margin: 0;
@@ -297,17 +297,17 @@ a.rag-card:hover .rag-card-arrow {
     }
 
     .rag-card {
-        gap: 12px;
-        padding: 10px;
+        gap: 14px;
+        padding: 14px;
     }
 
     .rag-card-image {
-        width: 48px;
-        height: 48px;
+        width: 64px;
+        height: 64px;
     }
 
     .rag-card-title {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
     .rag-card-desc {
