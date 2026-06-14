@@ -176,9 +176,9 @@ class RAG_Shortcode {
                     <?php echo get_the_post_thumbnail( $post_id, 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
                 <?php else : ?>
                     <svg class="rag-card-placeholder" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="56" height="56" rx="6" fill="#1a2a3a"/>
-                        <path d="M20 36l6-8 4 5 6-8 8 11H12z" fill="#374151"/>
-                        <circle cx="22" cy="22" r="3" fill="#374151"/>
+                        <rect width="56" height="56" rx="6" fill="#1f2228"/>
+                        <path d="M20 36l6-8 4 5 6-8 8 11H12z" fill="#3a3e45"/>
+                        <circle cx="22" cy="22" r="3" fill="#3a3e45"/>
                     </svg>
                 <?php endif; ?>
             </div>
