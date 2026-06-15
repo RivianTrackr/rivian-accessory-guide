@@ -18,45 +18,55 @@ export function initCardLinks() {
 }
 
 /**
- * Wire up the vehicle filter chips to show/hide accessory cards.
+ * Wire up the vehicle and category filter chips to show/hide accessory cards.
  *
- * Each chip carries a vehicle slug in `data-vehicle` ("all" shows everything).
- * Cards expose their vehicles via a space-separated `data-vehicles` attribute;
- * a card with no vehicles is treated as universal and always shows.
+ * There are up to two chip rows, each marked with `data-filter` ("vehicle" or
+ * "category") on its `.rag-filter-bar`. Chips carry their value in `data-value`
+ * ("all" clears that row). Filters combine with AND logic:
+ *
+ *   - A card matches the vehicle filter when "all" is selected, the card lists
+ *     the selected vehicle, or the card has no vehicles (universal).
+ *   - A section (category bucket) matches when "all" is selected or its
+ *     `data-category` equals the selected category.
+ *
+ * A card shows only when both its section's category and its own vehicle match.
  */
-export function initVehicleFilter() {
-    const bar = document.querySelector('.rag-filter-bar');
-    if (!bar) {
-        return;
-    }
-
-    const container = bar.closest('.rag-container');
+export function initFilters() {
+    const container = document.querySelector('.rag-container');
     if (!container) {
         return;
     }
 
-    const chips = Array.from(bar.querySelectorAll('.rag-filter-chip'));
-    const cards = Array.from(container.querySelectorAll('.rag-card'));
+    const bars = Array.from(container.querySelectorAll('.rag-filter-bar'));
+    if (!bars.length) {
+        return;
+    }
+
     const sections = Array.from(container.querySelectorAll('.rag-section'));
     const emptyMsg = container.querySelector('.rag-filter-empty');
+    const state = { vehicle: 'all', category: 'all' };
 
-    const apply = (vehicle) => {
+    const apply = () => {
         let visibleCount = 0;
 
-        cards.forEach((card) => {
-            const vehicles = (card.getAttribute('data-vehicles') || '').split(/\s+/).filter(Boolean);
-            // Show when filtering is off, the card matches, or the card is universal.
-            const show = vehicle === 'all' || vehicles.length === 0 || vehicles.includes(vehicle);
-            card.hidden = !show;
-            if (show) {
-                visibleCount += 1;
-            }
-        });
-
-        // Hide section headings whose cards are all filtered out.
         sections.forEach((section) => {
-            const hasVisible = section.querySelector('.rag-card:not([hidden])');
-            section.hidden = !hasVisible;
+            const sectionCat = section.getAttribute('data-category') || '';
+            const catMatch = state.category === 'all' || sectionCat === state.category;
+            let hasVisible = false;
+
+            section.querySelectorAll('.rag-card').forEach((card) => {
+                const vehicles = (card.getAttribute('data-vehicles') || '').split(/\s+/).filter(Boolean);
+                const vehMatch = state.vehicle === 'all' || vehicles.length === 0 || vehicles.includes(state.vehicle);
+                const show = catMatch && vehMatch;
+                card.hidden = !show;
+                if (show) {
+                    hasVisible = true;
+                    visibleCount += 1;
+                }
+            });
+
+            // Hide a section when its category is filtered out or it has no matching cards.
+            section.hidden = !(catMatch && hasVisible);
         });
 
         if (emptyMsg) {
@@ -64,20 +74,26 @@ export function initVehicleFilter() {
         }
     };
 
-    chips.forEach((chip) => {
-        chip.addEventListener('click', () => {
-            chips.forEach((c) => {
-                c.classList.remove('is-active');
-                c.setAttribute('aria-pressed', 'false');
+    bars.forEach((bar) => {
+        const type = bar.getAttribute('data-filter') === 'category' ? 'category' : 'vehicle';
+        const chips = Array.from(bar.querySelectorAll('.rag-filter-chip'));
+
+        chips.forEach((chip) => {
+            chip.addEventListener('click', () => {
+                chips.forEach((c) => {
+                    c.classList.remove('is-active');
+                    c.setAttribute('aria-pressed', 'false');
+                });
+                chip.classList.add('is-active');
+                chip.setAttribute('aria-pressed', 'true');
+                state[type] = chip.getAttribute('data-value') || 'all';
+                apply();
             });
-            chip.classList.add('is-active');
-            chip.setAttribute('aria-pressed', 'true');
-            apply(chip.getAttribute('data-vehicle') || 'all');
         });
     });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initCardLinks();
-    initVehicleFilter();
+    initFilters();
 });

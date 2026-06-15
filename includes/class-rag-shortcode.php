@@ -70,12 +70,54 @@ class RAG_Shortcode {
                 <p><?php echo esc_html( $atts['subtitle'] ); ?></p>
             </div>
 
-            <?php if ( ! empty( $vehicles ) ) : ?>
-                <div class="rag-filter-bar" role="group" aria-label="Filter accessories by vehicle">
-                    <button type="button" class="rag-filter-chip is-active" data-vehicle="all" aria-pressed="true">All</button>
-                    <?php foreach ( $vehicles as $vehicle ) : ?>
-                        <button type="button" class="rag-filter-chip" data-vehicle="<?php echo esc_attr( $vehicle->slug ); ?>" aria-pressed="false"><?php echo esc_html( $vehicle->name ); ?></button>
-                    <?php endforeach; ?>
+            <?php
+            // Detect uncategorized accessories so the category filter can offer an "Other" chip.
+            $uncat_probe = new WP_Query( array(
+                'post_type'      => 'rivian_accessory',
+                'posts_per_page' => 1,
+                'fields'         => 'ids',
+                'no_found_rows'  => true,
+                'tax_query'      => array(
+                    array(
+                        'taxonomy' => 'rivian_accessory_category',
+                        'operator' => 'NOT EXISTS',
+                    ),
+                ),
+            ) );
+            $has_uncategorized = $uncat_probe->have_posts();
+            wp_reset_postdata();
+
+            // Only worth showing a category filter when there is more than one bucket to choose from.
+            $show_category_filter = ! empty( $categories ) && ( count( $categories ) > 1 || $has_uncategorized );
+            ?>
+
+            <?php if ( ! empty( $vehicles ) || $show_category_filter ) : ?>
+                <div class="rag-filters">
+                    <?php if ( ! empty( $vehicles ) ) : ?>
+                        <div class="rag-filter-group">
+                            <span class="rag-filter-label">Vehicle</span>
+                            <div class="rag-filter-bar" data-filter="vehicle" role="group" aria-label="Filter accessories by vehicle">
+                                <button type="button" class="rag-filter-chip is-active" data-value="all" aria-pressed="true">All</button>
+                                <?php foreach ( $vehicles as $vehicle ) : ?>
+                                    <button type="button" class="rag-filter-chip" data-value="<?php echo esc_attr( $vehicle->slug ); ?>" aria-pressed="false"><?php echo esc_html( $vehicle->name ); ?></button>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ( $show_category_filter ) : ?>
+                        <div class="rag-filter-group">
+                            <span class="rag-filter-label">Category</span>
+                            <div class="rag-filter-bar" data-filter="category" role="group" aria-label="Filter accessories by category">
+                                <button type="button" class="rag-filter-chip is-active" data-value="all" aria-pressed="true">All</button>
+                                <?php foreach ( $categories as $category ) : ?>
+                                    <button type="button" class="rag-filter-chip" data-value="<?php echo esc_attr( $category->slug ); ?>" aria-pressed="false"><?php echo esc_html( $category->name ); ?></button>
+                                <?php endforeach; ?>
+                                <?php if ( $has_uncategorized ) : ?>
+                                    <button type="button" class="rag-filter-chip" data-value="uncategorized" aria-pressed="false">Other</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
 
@@ -98,7 +140,7 @@ class RAG_Shortcode {
                     continue;
                 }
                 ?>
-                <div class="rag-section">
+                <div class="rag-section" data-category="<?php echo esc_attr( $category->slug ); ?>">
                     <h2 class="rag-section-title"><?php echo esc_html( $category->name ); ?></h2>
                     <div class="rag-cards">
                         <?php while ( $query->have_posts() ) : $query->the_post(); ?>
@@ -123,7 +165,7 @@ class RAG_Shortcode {
 
             if ( $uncategorized_query->have_posts() ) :
             ?>
-                <div class="rag-section">
+                <div class="rag-section" data-category="uncategorized">
                     <h2 class="rag-section-title">Other</h2>
                     <div class="rag-cards">
                         <?php while ( $uncategorized_query->have_posts() ) : $uncategorized_query->the_post(); ?>
@@ -138,7 +180,7 @@ class RAG_Shortcode {
                 <p class="rag-empty">No accessories found.</p>
             <?php endif; ?>
 
-            <p class="rag-empty rag-filter-empty" hidden>No accessories match this vehicle.</p>
+            <p class="rag-empty rag-filter-empty" hidden>No accessories match these filters.</p>
 
         </div>
         <?php
@@ -152,6 +194,7 @@ class RAG_Shortcode {
         $buy_link    = get_post_meta( $post_id, '_rag_buy_link', true );
         $vendor      = get_post_meta( $post_id, '_rag_vendor', true );
         $discount    = get_post_meta( $post_id, '_rag_discount', true );
+        $price_tier  = (int) get_post_meta( $post_id, '_rag_price_tier', true );
         $title       = get_the_title( $post_id );
         $description = wp_trim_words( get_the_content(), 20, '&hellip;' );
         $has_link    = ! empty( $buy_link );
@@ -189,8 +232,15 @@ class RAG_Shortcode {
                         <span class="rag-card-discount"><?php echo esc_html( $discount ); ?></span>
                     <?php endif; ?>
                 </div>
-                <?php if ( ! empty( $vendor ) ) : ?>
-                    <p class="rag-card-vendor"><?php echo esc_html( $vendor ); ?></p>
+                <?php if ( ! empty( $vendor ) || ( $price_tier >= 1 && $price_tier <= 4 ) ) : ?>
+                    <div class="rag-card-meta">
+                        <?php if ( ! empty( $vendor ) ) : ?>
+                            <span class="rag-card-vendor"><?php echo esc_html( $vendor ); ?></span>
+                        <?php endif; ?>
+                        <?php if ( $price_tier >= 1 && $price_tier <= 4 ) : ?>
+                            <?php echo self::render_price_tier( $price_tier ); ?>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
                 <?php if ( $description ) : ?>
                     <p class="rag-card-desc"><?php echo esc_html( $description ); ?></p>
@@ -213,5 +263,32 @@ class RAG_Shortcode {
         </<?php echo $tag; ?>>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Render the price-tier badge ($ to $$$$).
+     *
+     * Always prints four glyphs; the first $tier are filled, the rest dimmed.
+     *
+     * @param int $tier Price tier, 1–4.
+     */
+    private static function render_price_tier( $tier ) {
+        $tier   = max( 1, min( 4, (int) $tier ) );
+        $labels = array(
+            1 => 'Budget — under $50',
+            2 => 'Moderate — $50 to $150',
+            3 => 'Premium — $150 to $500',
+            4 => 'Splurge — $500+',
+        );
+        $label = $labels[ $tier ];
+
+        $out  = '<span class="rag-card-price" title="' . esc_attr( $label ) . '" aria-label="' . esc_attr( 'Price range: ' . $label ) . '">';
+        for ( $i = 1; $i <= 4; $i++ ) {
+            $cls  = $i <= $tier ? 'rag-price-on' : 'rag-price-off';
+            $out .= '<span class="' . esc_attr( $cls ) . '" aria-hidden="true">$</span>';
+        }
+        $out .= '</span>';
+
+        return $out;
     }
 }
