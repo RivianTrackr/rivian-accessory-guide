@@ -45,6 +45,9 @@ export function initFilters() {
     const sortSelect = container.querySelector('[data-sort]');
     const emptyMsg = container.querySelector('.rag-filter-empty');
     const countNum = container.querySelector('.rag-count-num');
+    const filtersEl = container.querySelector('.rag-filters');
+    const toggle = container.querySelector('.rag-filter-toggle');
+    const toggleCount = container.querySelector('.rag-filter-toggle-count');
     const state = { vehicle: 'all', category: 'all', price: 'all', sort: 'default' };
 
     // Remember each section's original card order so "Featured" can be restored.
@@ -114,6 +117,12 @@ export function initFilters() {
         if (countNum) {
             countNum.textContent = String(visibleCount);
         }
+        if (toggleCount) {
+            // Surface how many filters are active while the panel is collapsed on mobile.
+            const active = ['vehicle', 'category', 'price'].filter((key) => state[key] !== 'all').length;
+            toggleCount.textContent = String(active);
+            toggleCount.hidden = active === 0;
+        }
     };
 
     bars.forEach((bar) => {
@@ -138,6 +147,14 @@ export function initFilters() {
         sortSelect.addEventListener('change', () => {
             state.sort = sortSelect.value || 'default';
             apply();
+        });
+    }
+
+    // Mobile-only collapse/expand. The panel is always visible on desktop via CSS.
+    if (toggle && filtersEl) {
+        toggle.addEventListener('click', () => {
+            const open = filtersEl.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
     }
 
