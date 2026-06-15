@@ -30,8 +30,8 @@ class RAG_Shortcode {
         self::$enqueued = true;
 
         $atts = shortcode_atts( array(
-            'title'    => 'Rivian Accessory Guide',
-            'subtitle' => 'Curated accessories and gear for your Rivian.',
+            'title'    => '',
+            'subtitle' => '',
             'limit'    => -1,
         ), $atts, 'rivian_accessories' );
 
@@ -65,10 +65,16 @@ class RAG_Shortcode {
         ?>
         <div class="rag-container">
 
-            <div class="rag-header">
-                <h1><?php echo esc_html( $atts['title'] ); ?></h1>
-                <p><?php echo esc_html( $atts['subtitle'] ); ?></p>
-            </div>
+            <?php if ( '' !== $atts['title'] || '' !== $atts['subtitle'] ) : ?>
+                <div class="rag-header">
+                    <?php if ( '' !== $atts['title'] ) : ?>
+                        <h1><?php echo esc_html( $atts['title'] ); ?></h1>
+                    <?php endif; ?>
+                    <?php if ( '' !== $atts['subtitle'] ) : ?>
+                        <p><?php echo esc_html( $atts['subtitle'] ); ?></p>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
             <?php
             // Detect uncategorized accessories so the category filter can offer an "Other" chip.
