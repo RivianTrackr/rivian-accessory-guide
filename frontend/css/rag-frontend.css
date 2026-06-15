@@ -107,6 +107,67 @@
     margin-bottom: 0;
 }
 
+/* --- Toolbar (result count + sort) --- */
+.rag-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rag-divider);
+}
+
+.rag-result-count {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--rag-text-secondary);
+}
+
+.rag-result-count .rag-count-num {
+    font-weight: 700;
+    color: var(--rag-text-heading);
+}
+
+.rag-sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rag-sort-label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--rag-text-muted);
+}
+
+.rag-sort-select {
+    appearance: none;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 8px 30px 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--rag-border);
+    background-color: var(--rag-bg-primary);
+    color: var(--rag-text-primary);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%23a6a39c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.2s ease;
+}
+
+.rag-sort-select:hover,
+.rag-sort-select:focus-visible {
+    border-color: var(--rag-accent);
+    outline: none;
+}
+
 .rag-filter-chip {
     appearance: none;
     font-family: inherit;
@@ -157,15 +218,22 @@
 /* --- Cards --- */
 .rag-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+    gap: 14px;
+}
+
+/* Denser columns on wide screens so cards read as a curated grid, not a stretched list. */
+@media (min-width: 1280px) {
+    .rag-cards {
+        grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    }
 }
 
 .rag-card {
     display: flex;
     align-items: center;
-    gap: 18px;
-    padding: 18px;
+    gap: 16px;
+    padding: 16px;
     background: var(--rag-bg-primary);
     border: 1px solid var(--rag-border);
     border-radius: var(--rag-radius-card);
