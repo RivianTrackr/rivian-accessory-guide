@@ -121,7 +121,17 @@ class RAG_Shortcode {
             ?>
 
             <?php if ( ! empty( $vehicles ) || $show_category_filter || $has_price ) : ?>
-                <div class="rag-filters">
+                <button type="button" class="rag-filter-toggle" aria-expanded="false" aria-controls="rag-filters">
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="rag-filter-toggle-label">Filters</span>
+                    <span class="rag-filter-toggle-count" hidden aria-hidden="true"></span>
+                    <svg class="rag-filter-toggle-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="rag-filters" id="rag-filters">
                     <?php if ( ! empty( $vehicles ) ) : ?>
                         <div class="rag-filter-group">
                             <span class="rag-filter-label">Vehicle</span>

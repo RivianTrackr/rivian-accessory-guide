@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Rivian Accessory Guide
  * Description: A curated accessory guide for Rivian vehicles with dark-themed card layout and affiliate links.
- * Version: 1.5.1
+ * Version: 1.6.0
  * Author: Jose Castillo
  * Text Domain: rivian-accessory-guide
  * License: GPL-2.0-or-later
@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'RAG_VERSION', '1.5.1' );
+define( 'RAG_VERSION', '1.6.0' );
 define( 'RAG_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RAG_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 

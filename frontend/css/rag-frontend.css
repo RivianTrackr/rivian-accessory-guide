@@ -107,6 +107,70 @@
     margin-bottom: 0;
 }
 
+/* --- Filter toggle (mobile only) --- */
+.rag-filter-toggle {
+    display: none; /* Shown only on mobile; desktop keeps filters always expanded. */
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--rag-text-primary);
+    background: var(--rag-bg-primary);
+    border: 1px solid var(--rag-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.rag-filter-toggle:hover,
+.rag-filter-toggle:focus-visible {
+    border-color: var(--rag-accent);
+    outline: none;
+}
+
+.rag-filter-toggle-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--rag-text-on-accent);
+    background: var(--rag-accent);
+    border-radius: 9999px;
+}
+
+.rag-filter-toggle-chevron {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.rag-filter-toggle[aria-expanded="true"] .rag-filter-toggle-chevron {
+    transform: rotate(180deg);
+}
+
+/* On mobile the filter panel is collapsed behind the toggle by default. */
+@media (max-width: 600px) {
+    .rag-filter-toggle {
+        display: flex;
+    }
+
+    .rag-filters {
+        display: none;
+        margin-bottom: 20px;
+    }
+
+    .rag-filters.is-open {
+        display: flex;
+    }
+}
+
 /* --- Toolbar (result count + sort) --- */
 .rag-toolbar {
     display: flex;
