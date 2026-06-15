@@ -89,9 +89,32 @@ class RAG_Shortcode {
 
             // Only worth showing a category filter when there is more than one bucket to choose from.
             $show_category_filter = ! empty( $categories ) && ( count( $categories ) > 1 || $has_uncategorized );
+
+            // Detect whether any accessory has a price tier, so the price filter only shows when useful.
+            $price_probe = new WP_Query( array(
+                'post_type'      => 'rivian_accessory',
+                'posts_per_page' => 1,
+                'fields'         => 'ids',
+                'no_found_rows'  => true,
+                'meta_query'     => array(
+                    array(
+                        'key'     => '_rag_price_tier',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+            ) );
+            $has_price = $price_probe->have_posts();
+            wp_reset_postdata();
+
+            $price_labels = array(
+                1 => 'Budget — under $50',
+                2 => 'Moderate — $50 to $150',
+                3 => 'Premium — $150 to $500',
+                4 => 'Splurge — $500+',
+            );
             ?>
 
-            <?php if ( ! empty( $vehicles ) || $show_category_filter ) : ?>
+            <?php if ( ! empty( $vehicles ) || $show_category_filter || $has_price ) : ?>
                 <div class="rag-filters">
                     <?php if ( ! empty( $vehicles ) ) : ?>
                         <div class="rag-filter-group">
@@ -118,6 +141,32 @@ class RAG_Shortcode {
                             </div>
                         </div>
                     <?php endif; ?>
+                    <?php if ( $has_price ) : ?>
+                        <div class="rag-filter-group">
+                            <span class="rag-filter-label">Price</span>
+                            <div class="rag-filter-bar" data-filter="price" role="group" aria-label="Filter accessories by price">
+                                <button type="button" class="rag-filter-chip is-active" data-value="all" aria-pressed="true">All</button>
+                                <?php for ( $t = 1; $t <= 4; $t++ ) : ?>
+                                    <button type="button" class="rag-filter-chip" data-value="<?php echo esc_attr( $t ); ?>" aria-pressed="false" title="<?php echo esc_attr( $price_labels[ $t ] ); ?>"><?php echo esc_html( str_repeat( '$', $t ) ); ?></button>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $categories ) || $has_uncategorized ) : ?>
+                <div class="rag-toolbar">
+                    <p class="rag-result-count" aria-live="polite"><span class="rag-count-num"></span> accessories</p>
+                    <label class="rag-sort">
+                        <span class="rag-sort-label">Sort</span>
+                        <select class="rag-sort-select" data-sort>
+                            <option value="default">Featured</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="name-asc">Name: A to Z</option>
+                        </select>
+                    </label>
                 </div>
             <?php endif; ?>
 
@@ -213,7 +262,7 @@ class RAG_Shortcode {
 
         ob_start();
         ?>
-        <<?php echo $tag; ?> class="rag-card"<?php echo $link_attrs; ?> data-vehicles="<?php echo esc_attr( implode( ' ', $vehicle_slugs ) ); ?>">
+        <<?php echo $tag; ?> class="rag-card"<?php echo $link_attrs; ?> data-vehicles="<?php echo esc_attr( implode( ' ', $vehicle_slugs ) ); ?>" data-price="<?php echo esc_attr( ( $price_tier >= 1 && $price_tier <= 4 ) ? $price_tier : '' ); ?>" data-name="<?php echo esc_attr( $title ); ?>">
             <div class="rag-card-image">
                 <?php if ( has_post_thumbnail( $post_id ) ) : ?>
                     <?php echo get_the_post_thumbnail( $post_id, 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
