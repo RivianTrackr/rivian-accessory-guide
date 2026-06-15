@@ -70,10 +70,14 @@
 
 /* --- Filters --- */
 .rag-filters {
-    display: flex;
+    display: none; /* Collapsed by default; revealed via the toggle on all viewports. */
     flex-direction: column;
     gap: 14px;
     margin-bottom: 28px;
+}
+
+.rag-filters.is-open {
+    display: flex;
 }
 
 .rag-filter-group {
@@ -107,12 +111,11 @@
     margin-bottom: 0;
 }
 
-/* --- Filter toggle (mobile only) --- */
+/* --- Filter toggle --- */
 .rag-filter-toggle {
-    display: none; /* Shown only on mobile; desktop keeps filters always expanded. */
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
     margin-bottom: 16px;
     padding: 10px 14px;
     font-family: inherit;
@@ -155,19 +158,11 @@
     transform: rotate(180deg);
 }
 
-/* On mobile the filter panel is collapsed behind the toggle by default. */
+/* Full-width toggle on mobile. */
 @media (max-width: 600px) {
     .rag-filter-toggle {
         display: flex;
-    }
-
-    .rag-filters {
-        display: none;
-        margin-bottom: 20px;
-    }
-
-    .rag-filters.is-open {
-        display: flex;
+        width: 100%;
     }
 }
 
