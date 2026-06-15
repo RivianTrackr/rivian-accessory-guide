@@ -277,6 +277,14 @@ class RAG_Admin {
 			delete_post_meta( $post_id, '_rag_discount' );
 		}
 
+		// Save price tier (1–4; anything else clears it).
+		$price_tier = intval( $post['price_tier'] ?? 0 );
+		if ( $price_tier >= 1 && $price_tier <= 4 ) {
+			update_post_meta( $post_id, '_rag_price_tier', $price_tier );
+		} else {
+			delete_post_meta( $post_id, '_rag_price_tier' );
+		}
+
 		// Save category.
 		$category_id = intval( $post['accessory_category'] ?? 0 );
 		if ( $category_id > 0 ) {

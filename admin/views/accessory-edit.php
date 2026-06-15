@@ -21,6 +21,7 @@ $v = array(
 	'vendor'      => $is_edit ? get_post_meta( $editing_id, '_rag_vendor', true ) : '',
 	'buy_link'    => $is_edit ? get_post_meta( $editing_id, '_rag_buy_link', true ) : '',
 	'discount'    => $is_edit ? get_post_meta( $editing_id, '_rag_discount', true ) : '',
+	'price_tier'  => $is_edit ? (string) get_post_meta( $editing_id, '_rag_price_tier', true ) : '',
 	'menu_order'  => $is_edit ? $post->menu_order : 0,
 );
 
@@ -118,7 +119,20 @@ $message = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) :
 					</div>
 					<div class="rag-field-row">
 						<div class="rag-field-label-row">
-							<label class="rag-field-label" for="accessory_category">Category</label>
+							<label class="rag-field-label" for="price_tier">Price Range</label>
+							</div>
+							<p class="rag-field-description">Approximate price tier, shown as a $&ndash;$$$$ badge on the card.</p>
+							<select id="price_tier" name="price_tier">
+								<option value="" <?php selected( $v['price_tier'], '' ); ?>>Not set</option>
+								<option value="1" <?php selected( $v['price_tier'], '1' ); ?>>$ &mdash; Budget (under $50)</option>
+								<option value="2" <?php selected( $v['price_tier'], '2' ); ?>>$$ &mdash; Moderate ($50&ndash;$150)</option>
+								<option value="3" <?php selected( $v['price_tier'], '3' ); ?>>$$$ &mdash; Premium ($150&ndash;$500)</option>
+								<option value="4" <?php selected( $v['price_tier'], '4' ); ?>>$$$$ &mdash; Splurge ($500+)</option>
+							</select>
+						</div>
+						<div class="rag-field-row">
+							<div class="rag-field-label-row">
+								<label class="rag-field-label" for="accessory_category">Category</label>
 						</div>
 						<select id="accessory_category" name="accessory_category">
 							<option value="">Uncategorized</option>
