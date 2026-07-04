@@ -716,9 +716,16 @@
 }
 
 .rag-bulk-actions select {
-    padding: 6px 12px;
+    padding: 0 12px;
     font-size: 14px;
+    width: auto;
+    min-width: 140px;
     max-width: 200px;
+    height: 40px;
+}
+
+.rag-bulk-actions .rag-btn {
+    height: 40px;
 }
 
 .rag-pagination {
@@ -798,6 +805,12 @@
     width: auto;
     min-width: 170px;
     height: 44px;
+}
+
+/* Shared custom-select treatment: native select chrome renders a different
+   height than styled inputs/buttons, so strip it and draw our own chevron. */
+.rag-search-box select,
+.rag-bulk-actions select {
     -webkit-appearance: none;
     appearance: none;
     padding-right: 34px;

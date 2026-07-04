@@ -2,6 +2,13 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.7.3 — 2026-07-04
+
+### Fixed
+- Bulk Actions dropdown now matches the Apply button height (40px), using
+  the same `appearance: none` + custom chevron treatment as the filter
+  dropdowns.
+
 ## 1.7.2 — 2026-07-04
 
 ### Fixed
