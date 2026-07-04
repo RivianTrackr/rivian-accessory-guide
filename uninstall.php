@@ -34,5 +34,20 @@ if ( ! is_wp_error( $terms ) ) {
 	}
 }
 
+$vehicle_terms = get_terms( array(
+	'taxonomy'   => 'rivian_accessory_vehicle',
+	'hide_empty' => false,
+	'fields'     => 'ids',
+) );
+
+if ( ! is_wp_error( $vehicle_terms ) ) {
+	foreach ( $vehicle_terms as $term_id ) {
+		wp_delete_term( $term_id, 'rivian_accessory_vehicle' );
+	}
+}
+
+// Delete plugin options.
+delete_option( 'rag_version' );
+
 // Flush rewrite rules.
 flush_rewrite_rules();

@@ -37,13 +37,12 @@ class RAG_Post_Type {
         );
 
         register_taxonomy( 'rivian_accessory_category', 'rivian_accessory', array(
-            'labels'            => $labels,
-            'hierarchical'      => true,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'rewrite'           => array( 'slug' => 'accessory-category' ),
+            'labels'             => $labels,
+            'hierarchical'       => true,
+            'public'             => false,
+            'publicly_queryable' => false,
+            'show_ui'            => false,
+            'rewrite'            => false,
         ) );
     }
 
@@ -67,18 +66,22 @@ class RAG_Post_Type {
         );
 
         register_taxonomy( 'rivian_accessory_vehicle', 'rivian_accessory', array(
-            'labels'            => $labels,
-            'hierarchical'      => false,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'rewrite'           => array( 'slug' => 'accessory-vehicle' ),
+            'labels'             => $labels,
+            'hierarchical'       => false,
+            'public'             => false,
+            'publicly_queryable' => false,
+            'show_ui'            => false,
+            'rewrite'            => false,
         ) );
     }
 
     /**
      * Register the rivian_accessory post type.
+     *
+     * Deliberately non-public: accessories only render inside the
+     * [rivian_accessories] shortcode, and cards link straight to affiliate
+     * URLs. Public single pages would be orphaned thin content in the
+     * sitemap, so no permalinks, archives, or REST exposure.
      */
     private static function register_post_type() {
         $labels = array(
@@ -96,13 +99,14 @@ class RAG_Post_Type {
         );
 
         register_post_type( 'rivian_accessory', array(
-            'labels'       => $labels,
-            'public'       => true,
-            'has_archive'  => false,
-            'show_in_rest' => true,
-            'supports'     => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
-            'menu_icon'    => 'dashicons-car',
-            'rewrite'      => array( 'slug' => 'accessory' ),
+            'labels'              => $labels,
+            'public'              => false,
+            'publicly_queryable'  => false,
+            'exclude_from_search' => true,
+            'show_ui'             => false,
+            'has_archive'         => false,
+            'supports'            => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
+            'rewrite'             => false,
         ) );
     }
 }
