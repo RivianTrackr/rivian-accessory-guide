@@ -781,8 +781,34 @@
     flex-wrap: wrap;
 }
 
+/* The global input/select rule sets width: 100% (max 400px), which makes
+   every control balloon and wrap; native select chrome also renders a
+   different height than the search field. Pin everything to one 44px row. */
 .rag-search-box input[type="search"] {
-    min-width: 280px;
+    flex: 1 1 240px;
+    width: auto;
+    min-width: 0;
+    height: 44px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.rag-search-box select {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 170px;
+    height: 44px;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236e6e73' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.rag-search-box .rag-btn {
+    height: 44px;
+    flex: 0 0 auto;
 }
 
 /* ==========================================================================

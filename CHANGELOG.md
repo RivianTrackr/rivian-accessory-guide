@@ -2,6 +2,16 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.7.2 — 2026-07-04
+
+### Fixed
+- Admin list filter controls (search field, category/vehicle dropdowns,
+  Filter/Clear buttons) now share a uniform 44px height and sit on one
+  row. Previously the global `width: 100%; max-width: 400px` input rule
+  made each control balloon to 400px and wrap, and native select chrome
+  rendered a different height than the search field. Selects now use a
+  custom chevron with `appearance: none`.
+
 ## 1.7.1 — 2026-07-04
 
 ### Fixed

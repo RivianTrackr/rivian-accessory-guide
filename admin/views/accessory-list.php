@@ -101,13 +101,13 @@ if ( is_wp_error( $vehicles ) ) {
 		<input type="hidden" name="page" value="rag-accessories">
 		<div class="rag-search-box">
 			<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Search accessories...">
-			<select name="filter_category" style="min-width:160px;">
+			<select name="filter_category">
 				<option value="">All Categories</option>
 				<?php foreach ( $categories as $cat ) : ?>
 					<option value="<?php echo esc_attr( $cat->term_id ); ?>" <?php selected( $filter_category, $cat->term_id ); ?>><?php echo esc_html( $cat->name ); ?></option>
 				<?php endforeach; ?>
 			</select>
-			<select name="filter_vehicle" style="min-width:160px;">
+			<select name="filter_vehicle">
 				<option value="">All Vehicles</option>
 				<?php foreach ( $vehicles as $vehicle ) : ?>
 					<option value="<?php echo esc_attr( $vehicle->term_id ); ?>" <?php selected( $filter_vehicle, $vehicle->term_id ); ?>><?php echo esc_html( $vehicle->name ); ?></option>
@@ -115,7 +115,7 @@ if ( is_wp_error( $vehicles ) ) {
 			</select>
 			<button type="submit" class="rag-btn rag-btn-secondary">Filter</button>
 			<?php if ( $search || $filter_category || $filter_vehicle ) : ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-accessories' ) ); ?>" class="rag-btn rag-btn-secondary" style="text-decoration:none;">Clear</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-accessories' ) ); ?>" class="rag-btn rag-btn-secondary">Clear</a>
 			<?php endif; ?>
 		</div>
 	</form>
