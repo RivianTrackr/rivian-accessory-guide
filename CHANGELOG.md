@@ -2,6 +2,15 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.7.1 — 2026-07-04
+
+### Fixed
+- Admin accessory list thumbnails now render as uniform framed tiles.
+  Mixed source images (white-background product shots, tight dark photos,
+  originals smaller than the WordPress thumbnail size) previously read as
+  different sizes; thumbnails now use a consistent 56px bordered box with
+  `object-fit: contain` so nothing is cropped or oversized.
+
 ## 1.7.0 — 2026-07-04
 
 ### Changed

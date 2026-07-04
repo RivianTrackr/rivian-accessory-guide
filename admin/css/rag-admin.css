@@ -626,23 +626,29 @@
 }
 
 .rag-table .column-image {
-    width: 60px;
+    width: 72px;
 }
 
+/* Uniform tile regardless of source image: contain (not cover) so mixed
+   aspect ratios and sub-150px originals all sit inside the same framed box. */
 .rag-table .accessory-thumb {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: var(--rag-radius-pill);
-    background: var(--rag-bg-light);
+    display: block;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    padding: 4px;
+    background: var(--rag-white);
+    border: 1px solid var(--rag-border);
+    border-radius: var(--rag-radius-input);
 }
 
 .rag-table .accessory-thumb-placeholder {
-    display: inline-block;
-    width: 50px;
-    height: 50px;
+    display: block;
+    width: 56px;
+    height: 56px;
     background: var(--rag-bg-light);
-    border-radius: var(--rag-radius-pill);
+    border: 1px solid var(--rag-border);
+    border-radius: var(--rag-radius-input);
 }
 
 .rag-table .column-primary strong a {
