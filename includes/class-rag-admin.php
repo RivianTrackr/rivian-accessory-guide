@@ -83,9 +83,6 @@ class RAG_Admin {
 			'rag-vehicles',
 			array( $this, 'render_vehicles' )
 		);
-
-		// Hide the default CPT menu.
-		remove_menu_page( 'edit.php?post_type=rivian_accessory' );
 	}
 
 	/**

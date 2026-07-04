@@ -207,9 +207,6 @@ if ( is_wp_error( $vehicles ) ) {
 											<span class="edit">
 												<a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-accessory-edit&id=' . $acc_id ) ); ?>">Edit</a> |
 											</span>
-											<span class="view">
-												<a href="<?php echo esc_url( get_permalink( $acc_id ) ); ?>" target="_blank" rel="noopener noreferrer">View</a> |
-											</span>
 											<span class="delete">
 												<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=rag-accessories&action=delete&post_id=' . $acc_id ), 'rag_delete_' . $acc_id ) ); ?>" onclick="return confirm('Delete this accessory?');">Delete</a>
 											</span>

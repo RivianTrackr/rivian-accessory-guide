@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Rivian Accessory Guide
  * Description: A curated accessory guide for Rivian vehicles with dark-themed card layout and affiliate links.
- * Version: 1.6.1
+ * Version: 1.7.0
  * Author: Jose Castillo
  * Text Domain: rivian-accessory-guide
  * License: GPL-2.0-or-later
@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'RAG_VERSION', '1.6.1' );
+define( 'RAG_VERSION', '1.7.0' );
 define( 'RAG_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RAG_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -39,6 +39,19 @@ function rag_init() {
 	RAG_Shortcode::register();
 }
 add_action( 'init', 'rag_init' );
+
+/**
+ * Flush rewrite rules once per version change, so stale rules (e.g. the
+ * public /accessory/ permalinks removed in 1.7.0) are cleared on update
+ * without requiring a manual reactivation.
+ */
+function rag_maybe_flush_rewrites() {
+	if ( get_option( 'rag_version' ) !== RAG_VERSION ) {
+		flush_rewrite_rules();
+		update_option( 'rag_version', RAG_VERSION );
+	}
+}
+add_action( 'init', 'rag_maybe_flush_rewrites', 20 );
 
 /**
  * Boot the custom admin panel.
