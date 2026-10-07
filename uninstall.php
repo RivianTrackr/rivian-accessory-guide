@@ -48,6 +48,7 @@ if ( ! is_wp_error( $vehicle_terms ) ) {
 
 // Delete plugin options.
 delete_option( 'rag_version' );
+delete_option( 'rag_affiliates' );
 
 // Flush rewrite rules.
 flush_rewrite_rules();

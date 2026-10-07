@@ -68,6 +68,203 @@
     line-height: 1.5;
 }
 
+/* --- Affiliate Links & Codes --- */
+.rag-affiliates {
+    margin-bottom: 28px;
+    padding: 18px 18px 16px;
+    background: var(--rag-bg-primary);
+    border: 1px solid color-mix(in srgb, var(--rag-accent) 35%, var(--rag-border));
+    border-radius: var(--rag-radius-card);
+}
+
+/* Standalone shortcode: the panel is the whole container, so drop the inner gap. */
+.rag-container-affiliates {
+    padding: 20px;
+}
+
+.rag-container-affiliates .rag-affiliates {
+    margin-bottom: 0;
+}
+
+.rag-affiliates-header {
+    margin-bottom: 12px;
+}
+
+.rag-affiliates-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rag-accent);
+    line-height: 1.2;
+}
+
+.rag-affiliates-subtitle {
+    margin: 6px 0 0;
+    font-size: 0.8rem;
+    color: var(--rag-text-secondary);
+}
+
+.rag-affiliate-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 10px;
+}
+
+.rag-affiliate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin: 0;
+    padding: 12px 14px;
+    background: var(--rag-bg-deep);
+    border: 1px solid var(--rag-border);
+    border-radius: 8px;
+}
+
+.rag-affiliate-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1 1 140px;
+}
+
+.rag-affiliate-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--rag-text-heading);
+    line-height: 1.3;
+}
+
+.rag-affiliate-note {
+    font-size: 0.78rem;
+    color: var(--rag-text-secondary);
+    line-height: 1.35;
+}
+
+.rag-affiliate-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.rag-affiliate-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    appearance: none;
+    font-family: inherit;
+    padding: 7px 10px;
+    border: 1px dashed color-mix(in srgb, var(--rag-accent) 60%, var(--rag-border));
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--rag-accent) 10%, transparent);
+    color: var(--rag-text-heading);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.rag-affiliate-code:hover,
+.rag-affiliate-code:focus-visible {
+    border-color: var(--rag-accent);
+    background: color-mix(in srgb, var(--rag-accent) 18%, transparent);
+    outline: none;
+}
+
+.rag-affiliate-code-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rag-text-muted);
+}
+
+.rag-affiliate-code-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    user-select: all;
+}
+
+.rag-affiliate-copy-icon {
+    color: var(--rag-text-muted);
+    transition: color 0.2s ease;
+}
+
+.rag-affiliate-code:hover .rag-affiliate-copy-icon {
+    color: var(--rag-accent);
+}
+
+/* Feedback swaps in where the "Code" label sits, so nothing overlaps neighbours. */
+.rag-affiliate-copied {
+    display: none;
+    order: -1;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    color: var(--rag-accent);
+}
+
+.rag-affiliate-code.is-copied .rag-affiliate-code-label,
+.rag-affiliate-code.is-failed .rag-affiliate-code-label {
+    display: none;
+}
+
+.rag-affiliate-code.is-copied .rag-affiliate-copied,
+.rag-affiliate-code.is-failed .rag-affiliate-copied {
+    display: inline;
+}
+
+.rag-affiliate-code.is-copied {
+    border-style: solid;
+    border-color: var(--rag-accent);
+}
+
+.rag-affiliate-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--rag-text-on-accent);
+    background: var(--rag-accent);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.rag-affiliate-link:hover,
+.rag-affiliate-link:focus-visible {
+    background: var(--rag-accent-hover);
+    color: var(--rag-text-on-accent);
+    text-decoration: none;
+    outline: none;
+}
+
+.rag-affiliate-link:hover svg {
+    transform: translateX(2px);
+}
+
+.rag-affiliate-link svg {
+    transition: transform 0.2s ease;
+}
+
 /* --- Filters --- */
 .rag-filters {
     display: none; /* Collapsed by default; revealed via the toggle on all viewports. */
@@ -381,6 +578,32 @@ a.rag-card:active {
     line-height: 1.4;
 }
 
+/* --- Card Promo Code Chip --- */
+.rag-card-code {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border: 1px dashed color-mix(in srgb, var(--rag-accent) 60%, var(--rag-border));
+    border-radius: 4px;
+    color: var(--rag-text-heading);
+    background: color-mix(in srgb, var(--rag-accent) 10%, transparent);
+    line-height: 1.4;
+}
+
+.rag-card-code-label {
+    font-family: var(--rag-font-stack);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rag-text-muted);
+}
+
 /* --- Card Meta (vendor + price tier) --- */
 .rag-card-meta {
     display: flex;
@@ -505,5 +728,22 @@ a.rag-card:hover .rag-card-arrow {
 
     .rag-card-desc {
         font-size: 0.75rem;
+    }
+
+    .rag-affiliates {
+        padding: 14px 12px 12px;
+    }
+
+    .rag-affiliate {
+        padding: 10px 12px;
+    }
+
+    .rag-affiliate-actions {
+        width: 100%;
+    }
+
+    .rag-affiliate-code {
+        flex: 1 1 auto;
+        justify-content: center;
     }
 }

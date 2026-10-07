@@ -187,6 +187,8 @@ $max_cat_count = ! empty( $cat_list ) ? $cat_list[0]['count'] : 1;
 		</div>
 		<div class="rag-card-body">
 			<code style="display:inline-block;padding:8px 16px;background:var(--rag-bg-light);border-radius:var(--rag-radius-input);font-size:14px;">[rivian_accessories]</code>
+			<p class="rag-field-description" style="margin-top:12px;">Your <a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-affiliates' ) ); ?>">affiliate links &amp; codes</a> appear at the top of that guide automatically. Add <code>affiliates="false"</code> to hide them, or drop them anywhere on their own with:</p>
+			<code style="display:inline-block;padding:8px 16px;background:var(--rag-bg-light);border-radius:var(--rag-radius-input);font-size:14px;">[rivian_affiliate_links]</code>
 		</div>
 	</div>
 
