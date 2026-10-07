@@ -21,6 +21,7 @@ $v = array(
 	'vendor'      => $is_edit ? get_post_meta( $editing_id, '_rag_vendor', true ) : '',
 	'buy_link'    => $is_edit ? get_post_meta( $editing_id, '_rag_buy_link', true ) : '',
 	'discount'    => $is_edit ? get_post_meta( $editing_id, '_rag_discount', true ) : '',
+	'promo_code'  => $is_edit ? get_post_meta( $editing_id, '_rag_promo_code', true ) : '',
 	'price_tier'  => $is_edit ? (string) get_post_meta( $editing_id, '_rag_price_tier', true ) : '',
 	'menu_order'  => $is_edit ? $post->menu_order : 0,
 );
@@ -200,6 +201,13 @@ $message = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) :
 						</div>
 						<p class="rag-field-description">Optional discount this link provides. Shown as a badge on the card.</p>
 						<input type="text" id="discount" name="discount" value="<?php echo esc_attr( $v['discount'] ); ?>" class="rag-input-wide" placeholder="e.g. 10% off">
+					</div>
+					<div class="rag-field-row">
+						<div class="rag-field-label-row">
+							<label class="rag-field-label" for="promo_code">Promo Code</label>
+						</div>
+						<p class="rag-field-description">Optional code visitors enter at checkout. Shown on the card next to the discount. For site-wide vendor codes, use <a href="<?php echo esc_url( admin_url( 'admin.php?page=rag-affiliates' ) ); ?>">Affiliate Links</a> instead.</p>
+						<input type="text" id="promo_code" name="promo_code" value="<?php echo esc_attr( $v['promo_code'] ); ?>" class="rag-input-wide" placeholder="e.g. RIVIANTRACKR">
 					</div>
 					<div class="rag-field-row">
 						<div class="rag-field-label-row">

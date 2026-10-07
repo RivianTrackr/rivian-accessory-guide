@@ -162,7 +162,75 @@ export function initFilters() {
     apply();
 }
 
+/**
+ * One-click copy for affiliate promo codes.
+ *
+ * Each `.rag-affiliate-code` button carries its code in `data-code`. On click
+ * the code is written to the clipboard (with a hidden-textarea fallback for
+ * browsers without the async Clipboard API) and the button briefly flips to
+ * a "Copied" state.
+ */
+export function initCopyCodes() {
+    const buttons = document.querySelectorAll('.rag-affiliate-code[data-code]');
+    if (!buttons.length) {
+        return;
+    }
+
+    const fallbackCopy = (text) => {
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        let ok = false;
+        try {
+            ok = document.execCommand('copy');
+        } catch (e) {
+            ok = false;
+        }
+        document.body.removeChild(el);
+        return ok;
+    };
+
+    const copy = (text) => {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text).then(() => true, () => fallbackCopy(text));
+        }
+        return Promise.resolve(fallbackCopy(text));
+    };
+
+    buttons.forEach((button) => {
+        const feedback = button.querySelector('.rag-affiliate-copied');
+        let timer = null;
+
+        button.addEventListener('click', () => {
+            const code = button.getAttribute('data-code') || '';
+            if (!code) {
+                return;
+            }
+            copy(code).then((ok) => {
+                button.classList.add(ok ? 'is-copied' : 'is-failed');
+                if (feedback) {
+                    feedback.textContent = ok ? 'Copied' : 'Copy failed';
+                }
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(() => {
+                    button.classList.remove('is-copied', 'is-failed');
+                    if (feedback) {
+                        feedback.textContent = '';
+                    }
+                }, 1800);
+            });
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initCardLinks();
     initFilters();
+    initCopyCodes();
 });

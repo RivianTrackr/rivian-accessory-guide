@@ -2,6 +2,26 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.8.0 — 2026-10-07
+
+### Added
+- Affiliate Links & Codes: a new admin page (Accessories → Affiliate Links)
+  for site-wide vendor links and promo codes that are not tied to a single
+  accessory. Each entry has a name, affiliate URL, promo code, short offer
+  note, and display order.
+- The guide now shows those entries in a highlighted panel above the filters
+  so readers can find them without hunting through cards. Codes get a
+  one-click copy button; links open in a new tab with `rel="sponsored"`.
+  Hide the panel with `[rivian_accessories affiliates="false"]` or retitle
+  it with `affiliates_title="..."`.
+- New `[rivian_affiliate_links]` shortcode renders the same panel on its own
+  anywhere on the site (accepts `title` and `subtitle`).
+- Per-accessory Promo Code field, shown as a code chip on the card next to
+  the discount badge.
+
+### Changed
+- Uninstall now removes the stored affiliate list.
+
 ## 1.7.3 — 2026-07-04
 
 ### Fixed

@@ -83,6 +83,15 @@ class RAG_Admin {
 			'rag-vehicles',
 			array( $this, 'render_vehicles' )
 		);
+
+		$this->page_hooks[] = add_submenu_page(
+			'rag-dashboard',
+			'Affiliate Links & Codes',
+			'Affiliate Links',
+			'manage_options',
+			'rag-affiliates',
+			array( $this, 'render_affiliates' )
+		);
 	}
 
 	/**
@@ -93,7 +102,7 @@ class RAG_Admin {
 	public function enqueue_assets( $hook ) {
 		// Match by page slug (most reliable) or hook suffix (fallback).
 		$page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
-		$our_pages = array( 'rag-dashboard', 'rag-accessories', 'rag-accessory-edit', 'rag-categories', 'rag-vehicles' );
+		$our_pages = array( 'rag-dashboard', 'rag-accessories', 'rag-accessory-edit', 'rag-categories', 'rag-vehicles', 'rag-affiliates' );
 
 		if ( ! in_array( $page, $our_pages, true ) && ! in_array( $hook, $this->page_hooks, true ) ) {
 			return;
@@ -159,6 +168,14 @@ class RAG_Admin {
 		if ( isset( $_GET['action'] ) && 'delete_vehicle' === $_GET['action'] && isset( $_GET['term_id'] ) ) {
 			$this->handle_vehicle_delete();
 		}
+
+		if ( isset( $_POST['rag_affiliate_save'] ) ) {
+			$this->handle_affiliate_save();
+		}
+
+		if ( isset( $_GET['action'] ) && 'delete_affiliate' === $_GET['action'] && isset( $_GET['affiliate_id'] ) ) {
+			$this->handle_affiliate_delete();
+		}
 	}
 
 	// --- Page Renderers ---
@@ -211,6 +228,16 @@ class RAG_Admin {
 			return;
 		}
 		require_once RAG_PLUGIN_DIR . 'admin/views/vehicles.php';
+	}
+
+	/**
+	 * Render the affiliate links & codes page.
+	 */
+	public function render_affiliates() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		require_once RAG_PLUGIN_DIR . 'admin/views/affiliates.php';
 	}
 
 	// --- Action Handlers ---
@@ -272,6 +299,14 @@ class RAG_Admin {
 			update_post_meta( $post_id, '_rag_discount', $discount );
 		} else {
 			delete_post_meta( $post_id, '_rag_discount' );
+		}
+
+		// Save promo code.
+		$promo_code = sanitize_text_field( $post['promo_code'] ?? '' );
+		if ( $promo_code ) {
+			update_post_meta( $post_id, '_rag_promo_code', $promo_code );
+		} else {
+			delete_post_meta( $post_id, '_rag_promo_code' );
 		}
 
 		// Save price tier (1–4; anything else clears it).
@@ -463,6 +498,57 @@ class RAG_Admin {
 
 		wp_delete_term( $term_id, 'rivian_accessory_vehicle' );
 		wp_redirect( admin_url( 'admin.php?page=rag-vehicles&message=deleted' ) );
+		exit;
+	}
+
+	/**
+	 * Create or update an affiliate link / code.
+	 */
+	private function handle_affiliate_save() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Unauthorized' );
+		}
+
+		check_admin_referer( 'rag_affiliate_save', 'rag_affiliate_nonce' );
+
+		$post       = wp_unslash( $_POST );
+		$editing_id = sanitize_key( $post['editing_id'] ?? '' );
+		$is_update  = '' !== $editing_id && null !== RAG_Affiliates::get( $editing_id );
+
+		$result = RAG_Affiliates::save(
+			array(
+				'name'  => $post['affiliate_name'] ?? '',
+				'url'   => $post['affiliate_url'] ?? '',
+				'code'  => $post['affiliate_code'] ?? '',
+				'note'  => $post['affiliate_note'] ?? '',
+				'order' => $post['affiliate_order'] ?? 0,
+			),
+			$editing_id
+		);
+
+		if ( is_wp_error( $result ) ) {
+			wp_redirect( admin_url( 'admin.php?page=rag-affiliates&message=error' ) );
+			exit;
+		}
+
+		$msg = $is_update ? 'updated' : 'added';
+		wp_redirect( admin_url( 'admin.php?page=rag-affiliates&message=' . $msg ) );
+		exit;
+	}
+
+	/**
+	 * Delete an affiliate link / code.
+	 */
+	private function handle_affiliate_delete() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Unauthorized' );
+		}
+
+		$affiliate_id = sanitize_key( $_GET['affiliate_id'] );
+		check_admin_referer( 'rag_delete_affiliate_' . $affiliate_id );
+
+		RAG_Affiliates::delete( $affiliate_id );
+		wp_redirect( admin_url( 'admin.php?page=rag-affiliates&message=deleted' ) );
 		exit;
 	}
 }

@@ -30,10 +30,17 @@ class RAG_Shortcode {
         self::$enqueued = true;
 
         $atts = shortcode_atts( array(
-            'title'    => '',
-            'subtitle' => '',
-            'limit'    => -1,
+            'title'            => '',
+            'subtitle'         => '',
+            'limit'            => -1,
+            'affiliates'       => 'true',
+            'affiliates_title' => 'Affiliate Links & Codes',
         ), $atts, 'rivian_accessories' );
+
+        // Site-wide affiliate links & promo codes, shown above the filters so
+        // readers can find them without digging through cards.
+        $show_affiliates = filter_var( $atts['affiliates'], FILTER_VALIDATE_BOOLEAN );
+        $affiliates      = $show_affiliates ? RAG_Affiliates::get_all() : array();
 
         $categories = get_terms( array(
             'taxonomy'   => 'rivian_accessory_category',
@@ -74,6 +81,10 @@ class RAG_Shortcode {
                         <p><?php echo esc_html( $atts['subtitle'] ); ?></p>
                     <?php endif; ?>
                 </div>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $affiliates ) ) : ?>
+                <?php echo RAG_Affiliates::render_panel( $affiliates, $atts['affiliates_title'] ); ?>
             <?php endif; ?>
 
             <?php
@@ -259,6 +270,7 @@ class RAG_Shortcode {
         $buy_link    = get_post_meta( $post_id, '_rag_buy_link', true );
         $vendor      = get_post_meta( $post_id, '_rag_vendor', true );
         $discount    = get_post_meta( $post_id, '_rag_discount', true );
+        $promo_code  = get_post_meta( $post_id, '_rag_promo_code', true );
         $price_tier  = (int) get_post_meta( $post_id, '_rag_price_tier', true );
         $title       = get_the_title( $post_id );
         $description = wp_trim_words( get_the_content(), 20, '&hellip;' );
@@ -295,6 +307,9 @@ class RAG_Shortcode {
                     <h3 class="rag-card-title"><?php echo esc_html( $title ); ?></h3>
                     <?php if ( $has_link && ! empty( $discount ) ) : ?>
                         <span class="rag-card-discount"><?php echo esc_html( $discount ); ?></span>
+                    <?php endif; ?>
+                    <?php if ( ! empty( $promo_code ) ) : ?>
+                        <span class="rag-card-code" title="Use this code at checkout"><span class="rag-card-code-label">Code</span> <?php echo esc_html( $promo_code ); ?></span>
                     <?php endif; ?>
                 </div>
                 <?php if ( ! empty( $vendor ) || ( $price_tier >= 1 && $price_tier <= 4 ) ) : ?>
