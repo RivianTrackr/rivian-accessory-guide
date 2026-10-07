@@ -70,8 +70,8 @@
 
 /* --- Affiliate Links & Codes --- */
 .rag-affiliates {
-    margin-bottom: 28px;
-    padding: 18px 18px 16px;
+    margin-bottom: 24px;
+    padding: 16px 16px 14px;
     background: var(--rag-bg-primary);
     border: 1px solid color-mix(in srgb, var(--rag-accent) 35%, var(--rag-border));
     border-radius: var(--rag-radius-card);
@@ -87,7 +87,16 @@
 }
 
 .rag-affiliates-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 16px;
     margin-bottom: 12px;
+}
+
+.rag-affiliates-heading {
+    min-width: 0;
 }
 
 .rag-affiliates-title {
@@ -95,7 +104,7 @@
     align-items: center;
     gap: 8px;
     margin: 0;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -104,69 +113,124 @@
 }
 
 .rag-affiliates-subtitle {
-    margin: 6px 0 0;
+    margin: 4px 0 0;
     font-size: 0.8rem;
     color: var(--rag-text-secondary);
+    line-height: 1.4;
 }
 
+.rag-affiliates-subtitle b {
+    font-weight: 600;
+    color: var(--rag-text-heading);
+}
+
+.rag-affiliates-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--rag-text-muted);
+    white-space: nowrap;
+}
+
+/* Compact rows: 1 column on phones, 2 on tablets, 3 on desktop. */
 .rag-affiliate-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
-    gap: 10px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
 }
 
+@media (min-width: 720px) {
+    .rag-affiliate-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1140px) {
+    .rag-affiliate-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Every row has the same anatomy: monogram, name + offer, actions. */
 .rag-affiliate {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px 14px;
+    gap: 12px;
     margin: 0;
-    padding: 12px 14px;
+    padding: 10px 12px;
+    min-height: 58px;
     background: var(--rag-bg-deep);
     border: 1px solid var(--rag-border);
     border-radius: 8px;
+    transition: border-color 0.2s ease;
+}
+
+.rag-affiliate:hover {
+    border-color: var(--rag-border-hover);
+}
+
+.rag-affiliate-mono {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--rag-accent);
+    background: color-mix(in srgb, var(--rag-accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rag-accent) 22%, transparent);
 }
 
 .rag-affiliate-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     min-width: 0;
-    flex: 1 1 140px;
 }
 
 .rag-affiliate-name {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 600;
     color: var(--rag-text-heading);
-    line-height: 1.3;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .rag-affiliate-note {
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     color: var(--rag-text-secondary);
-    line-height: 1.35;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rag-affiliate-note.is-default {
+    color: var(--rag-text-muted);
 }
 
 .rag-affiliate-actions {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     flex-shrink: 0;
 }
 
+/* The code chip is the one loud element in each row. */
 .rag-affiliate-code {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     appearance: none;
     font-family: inherit;
-    padding: 7px 10px;
+    padding: 6px 9px;
     border: 1px dashed color-mix(in srgb, var(--rag-accent) 60%, var(--rag-border));
     border-radius: 6px;
     background: color-mix(in srgb, var(--rag-accent) 10%, transparent);
@@ -182,19 +246,13 @@
     outline: none;
 }
 
-.rag-affiliate-code-label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--rag-text-muted);
-}
-
+/* Display codes in uppercase for consistency; the copy button still copies the exact stored text. */
 .rag-affiliate-code-value {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.06em;
+    text-transform: uppercase;
     user-select: all;
 }
 
@@ -207,10 +265,9 @@
     color: var(--rag-accent);
 }
 
-/* Feedback swaps in where the "Code" label sits, so nothing overlaps neighbours. */
+/* Feedback swaps in where the code sits, so nothing overlaps neighbours. */
 .rag-affiliate-copied {
     display: none;
-    order: -1;
     font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -219,8 +276,8 @@
     color: var(--rag-accent);
 }
 
-.rag-affiliate-code.is-copied .rag-affiliate-code-label,
-.rag-affiliate-code.is-failed .rag-affiliate-code-label {
+.rag-affiliate-code.is-copied .rag-affiliate-code-value,
+.rag-affiliate-code.is-failed .rag-affiliate-code-value {
     display: none;
 }
 
@@ -234,35 +291,95 @@
     border-color: var(--rag-accent);
 }
 
+/* Shop is a quiet icon button that fills on hover; labeled only when there is no code. */
 .rag-affiliate-link {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 7px 12px;
-    font-size: 0.8rem;
+    justify-content: center;
+    gap: 5px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: var(--rag-text-secondary);
+    border: 1px solid var(--rag-border);
+    background: transparent;
+    text-decoration: none;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.rag-affiliate-link.is-labeled {
+    width: auto;
+    padding: 0 10px;
+    font-size: 0.76rem;
     font-weight: 700;
     line-height: 1;
-    color: var(--rag-text-on-accent);
-    background: var(--rag-accent);
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .rag-affiliate-link:hover,
 .rag-affiliate-link:focus-visible {
-    background: var(--rag-accent-hover);
     color: var(--rag-text-on-accent);
+    background: var(--rag-accent);
+    border-color: var(--rag-accent);
     text-decoration: none;
     outline: none;
 }
 
-.rag-affiliate-link:hover svg {
-    transform: translateX(2px);
+/* "Show all" is phone-only; desktop always shows the full grid. */
+.rag-affiliates-more {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    appearance: none;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 9px;
+    color: var(--rag-text-secondary);
+    background: transparent;
+    border: 1px dashed var(--rag-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
 }
 
-.rag-affiliate-link svg {
-    transition: transform 0.2s ease;
+.rag-affiliates-more:hover,
+.rag-affiliates-more:focus-visible {
+    border-color: var(--rag-accent);
+    color: var(--rag-text-heading);
+    outline: none;
+}
+
+@media (max-width: 719px) {
+    .rag-affiliate-list.is-collapsed .rag-affiliate:nth-child(n + 5) {
+        display: none;
+    }
+
+    .rag-affiliates-more {
+        display: block;
+    }
+}
+
+/* Phone: actions drop under the name so vendor names never truncate. */
+@media (max-width: 519px) {
+    .rag-affiliate {
+        grid-template-columns: auto minmax(0, 1fr);
+        row-gap: 8px;
+    }
+
+    .rag-affiliate-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+
+    .rag-affiliate-actions .rag-affiliate-code {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .rag-affiliate-name,
+    .rag-affiliate-note {
+        white-space: normal;
+    }
 }
 
 /* --- Filters --- */
@@ -344,6 +461,10 @@
     color: var(--rag-text-on-accent);
     background: var(--rag-accent);
     border-radius: 9999px;
+}
+
+.rag-filter-toggle-count[hidden] {
+    display: none;
 }
 
 .rag-filter-toggle-chevron {
@@ -732,18 +853,5 @@ a.rag-card:hover .rag-card-arrow {
 
     .rag-affiliates {
         padding: 14px 12px 12px;
-    }
-
-    .rag-affiliate {
-        padding: 10px 12px;
-    }
-
-    .rag-affiliate-actions {
-        width: 100%;
-    }
-
-    .rag-affiliate-code {
-        flex: 1 1 auto;
-        justify-content: center;
     }
 }

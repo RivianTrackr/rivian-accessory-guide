@@ -215,6 +215,7 @@ export function initCopyCodes() {
                 if (feedback) {
                     feedback.textContent = ok ? 'Copied' : 'Copy failed';
                 }
+                button.setAttribute('aria-label', (ok ? 'Copied code ' : 'Could not copy code ') + code);
                 if (timer) {
                     clearTimeout(timer);
                 }
@@ -223,8 +224,31 @@ export function initCopyCodes() {
                     if (feedback) {
                         feedback.textContent = '';
                     }
+                    button.setAttribute('aria-label', 'Copy code ' + code);
                 }, 1800);
             });
+        });
+    });
+}
+
+/**
+ * Phone-only "Show all N partners" toggle for the affiliate panel.
+ *
+ * The list starts with `.is-collapsed`, which CSS turns into "first four
+ * rows only" below 720px and ignores on wider screens.
+ */
+export function initAffiliateToggle() {
+    document.querySelectorAll('.rag-affiliates-more').forEach((button) => {
+        const list = button.parentElement ? button.parentElement.querySelector('.rag-affiliate-list') : null;
+        if (!list) {
+            return;
+        }
+        button.addEventListener('click', () => {
+            const collapsed = list.classList.toggle('is-collapsed');
+            button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+            button.textContent = collapsed
+                ? (button.getAttribute('data-show-all') || 'Show all')
+                : (button.getAttribute('data-show-fewer') || 'Show fewer');
         });
     });
 }
@@ -233,4 +257,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initCardLinks();
     initFilters();
     initCopyCodes();
+    initAffiliateToggle();
 });
