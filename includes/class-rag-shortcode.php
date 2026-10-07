@@ -33,8 +33,9 @@ class RAG_Shortcode {
             'title'            => '',
             'subtitle'         => '',
             'limit'            => -1,
-            'affiliates'       => 'true',
-            'affiliates_title' => 'Affiliate Links & Codes',
+            'affiliates'          => 'true',
+            'affiliates_title'    => 'Affiliate Links & Codes',
+            'affiliates_subtitle' => 'auto',
         ), $atts, 'rivian_accessories' );
 
         // Site-wide affiliate links & promo codes, shown above the filters so
@@ -84,7 +85,7 @@ class RAG_Shortcode {
             <?php endif; ?>
 
             <?php if ( ! empty( $affiliates ) ) : ?>
-                <?php echo RAG_Affiliates::render_panel( $affiliates, $atts['affiliates_title'] ); ?>
+                <?php echo RAG_Affiliates::render_panel( $affiliates, $atts['affiliates_title'], $atts['affiliates_subtitle'] ); ?>
             <?php endif; ?>
 
             <?php

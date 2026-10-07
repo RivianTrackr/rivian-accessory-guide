@@ -1,0 +1,358 @@
+<title>Affiliate Panel Mockup</title>
+<style>
+/* Layout: single dark surface matching the live RivianTrackr guide. A segmented
+   control swaps the current panel for the proposed one in place, with the
+   filter bar and first product row kept underneath for context. */
+:root {
+    --rag-accent: #fba919;
+    --rag-accent-hover: #ffbe4a;
+    --rag-bg-page: #0d0f12;
+    --rag-bg-primary: #16191e;
+    --rag-bg-deep: #121418;
+    --rag-bg-hover: #1f2228;
+    --rag-text-primary: #ece9e4;
+    --rag-text-secondary: #a6a39c;
+    --rag-text-muted: #79766f;
+    --rag-text-heading: #f6f4f0;
+    --rag-text-on-accent: #15130e;
+    --rag-border: #3a3e45;
+    --rag-border-hover: #4e525a;
+    --rag-divider: #24272d;
+    --rag-font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --rag-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding-block: 28px 48px;
+    padding-inline: clamp(16px, 4vw, 40px);
+    background: var(--rag-bg-page);
+    color: var(--rag-text-primary);
+    font-family: var(--rag-font-stack);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1680px; margin: 0 auto; }
+
+/* --- Mockup chrome --- */
+.mock-bar {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 18px;
+}
+.mock-title { margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--rag-text-heading); }
+.mock-title span { color: var(--rag-text-muted); font-weight: 500; }
+.seg { display: inline-flex; padding: 3px; background: var(--rag-bg-primary); border: 1px solid var(--rag-border); border-radius: 9999px; }
+.seg button {
+    appearance: none; border: 0; background: transparent; color: var(--rag-text-secondary);
+    font: inherit; font-size: 0.8rem; font-weight: 600; padding: 7px 14px; border-radius: 9999px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--rag-accent); color: var(--rag-text-on-accent); }
+.seg button:focus-visible { outline: 2px solid var(--rag-accent); outline-offset: 2px; }
+.notes {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 10px;
+    margin: 0 0 22px; padding: 0; list-style: none;
+}
+.notes li {
+    font-size: 0.78rem; color: var(--rag-text-secondary); padding: 10px 12px;
+    background: var(--rag-bg-primary); border: 1px solid var(--rag-divider); border-radius: 8px;
+}
+.notes b { color: var(--rag-text-heading); font-weight: 600; }
+.notes[hidden] { display: none; }
+
+/* --- Guide container (as on the live site) --- */
+.rag-container {
+    padding: 32px 20px 40px;
+    background: var(--rag-bg-deep);
+    border-radius: 12px;
+}
+
+/* ===== CURRENT PANEL (replica of what ships today) ===== */
+.cur-panel {
+    margin-bottom: 28px; padding: 18px 18px 16px;
+    background: var(--rag-bg-primary);
+    border: 1px solid color-mix(in srgb, var(--rag-accent) 35%, var(--rag-border));
+    border-radius: 12px;
+}
+.cur-title { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rag-accent); }
+.cur-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 10px; }
+.cur-item { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 14px; padding: 12px 14px; background: var(--rag-bg-deep); border: 1px solid var(--rag-border); border-radius: 8px; }
+.cur-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 140px; }
+.cur-name { font-size: 0.95rem; font-weight: 600; color: var(--rag-text-heading); line-height: 1.3; }
+.cur-note { font-size: 0.78rem; color: var(--rag-text-secondary); }
+.cur-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.cur-code { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border: 1px dashed color-mix(in srgb, var(--rag-accent) 60%, var(--rag-border)); border-radius: 6px; background: color-mix(in srgb, var(--rag-accent) 10%, transparent); color: var(--rag-text-heading); font: inherit; cursor: pointer; }
+.cur-code small { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rag-text-muted); }
+.cur-code b { font-family: var(--rag-mono); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; }
+.cur-shop { display: inline-flex; align-items: center; gap: 4px; padding: 7px 12px; font-size: 0.8rem; font-weight: 700; line-height: 1; color: var(--rag-text-on-accent); background: var(--rag-accent); border-radius: 6px; text-decoration: none; }
+
+/* ===== PROPOSED PANEL ===== */
+.aff {
+    margin-bottom: 24px; padding: 16px 16px 14px;
+    background: var(--rag-bg-primary);
+    border: 1px solid color-mix(in srgb, var(--rag-accent) 35%, var(--rag-border));
+    border-radius: 12px;
+}
+.aff-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 12px; }
+.aff-title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rag-accent); }
+.aff-sub { margin: 4px 0 0; font-size: 0.8rem; color: var(--rag-text-secondary); }
+.aff-sub b { color: var(--rag-text-heading); font-weight: 600; }
+.aff-count { font-size: 0.72rem; font-weight: 600; color: var(--rag-text-muted); white-space: nowrap; }
+
+.aff-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 8px; }
+@media (min-width: 720px) { .aff-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1140px) { .aff-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.aff-row {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+    padding: 10px 12px; min-height: 58px;
+    background: var(--rag-bg-deep); border: 1px solid var(--rag-border); border-radius: 8px;
+    transition: border-color 0.2s ease;
+}
+.aff-row:hover { border-color: var(--rag-border-hover); }
+.aff-mono {
+    width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+    font-size: 0.85rem; font-weight: 700; color: var(--rag-accent);
+    background: color-mix(in srgb, var(--rag-accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rag-accent) 22%, transparent);
+}
+.aff-mono img { width: 100%; height: 100%; object-fit: contain; border-radius: 7px; }
+.aff-info { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+.aff-name { font-size: 0.92rem; font-weight: 600; color: var(--rag-text-heading); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aff-note { font-size: 0.74rem; color: var(--rag-text-secondary); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aff-note.is-empty { color: var(--rag-text-muted); }
+.aff-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.aff-code {
+    display: inline-flex; align-items: center; gap: 6px; appearance: none; font: inherit;
+    padding: 6px 9px; border-radius: 6px; cursor: pointer;
+    border: 1px dashed color-mix(in srgb, var(--rag-accent) 60%, var(--rag-border));
+    background: color-mix(in srgb, var(--rag-accent) 10%, transparent);
+    color: var(--rag-text-heading);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.aff-code:hover, .aff-code:focus-visible { border-color: var(--rag-accent); background: color-mix(in srgb, var(--rag-accent) 18%, transparent); outline: none; }
+.aff-code-value { font-family: var(--rag-mono); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.aff-code svg { color: var(--rag-text-muted); }
+.aff-code:hover svg { color: var(--rag-accent); }
+.aff-code .aff-copied { display: none; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rag-accent); }
+.aff-code.is-copied .aff-code-value { display: none; }
+.aff-code.is-copied .aff-copied { display: inline; }
+.aff-code.is-copied { border-style: solid; border-color: var(--rag-accent); }
+
+.aff-shop {
+    display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px;
+    color: var(--rag-text-secondary); border: 1px solid var(--rag-border); background: transparent; text-decoration: none;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.aff-shop:hover, .aff-shop:focus-visible { color: var(--rag-text-on-accent); background: var(--rag-accent); border-color: var(--rag-accent); outline: none; }
+.aff-shop.is-wide { width: auto; padding: 0 10px; gap: 5px; font-size: 0.76rem; font-weight: 700; }
+
+.aff-more {
+    display: none; margin-top: 10px; width: 100%; appearance: none; font: inherit; font-size: 0.78rem; font-weight: 600;
+    padding: 9px; color: var(--rag-text-secondary); background: transparent; border: 1px dashed var(--rag-border); border-radius: 8px; cursor: pointer;
+}
+@media (max-width: 719px) {
+    .aff-list.is-collapsed .aff-row:nth-child(n + 5) { display: none; }
+    .aff-more { display: block; }
+}
+/* Phone: actions drop under the name so vendor names never truncate. */
+@media (max-width: 519px) {
+    .aff-row { grid-template-columns: auto minmax(0, 1fr); row-gap: 8px; }
+    .aff-actions { grid-column: 1 / -1; justify-content: flex-start; }
+    .aff-actions .aff-code { flex: 1 1 auto; justify-content: center; }
+    .aff-name, .aff-note { white-space: normal; }
+}
+
+/* --- Guide context below the panel (static replica) --- */
+.rag-filter-toggle { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px 14px; font-size: 0.85rem; font-weight: 600; color: var(--rag-text-primary); background: var(--rag-bg-primary); border: 1px solid var(--rag-border); border-radius: 8px; }
+.rag-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--rag-divider); font-size: 0.8rem; color: var(--rag-text-secondary); }
+.rag-toolbar b { color: var(--rag-text-heading); }
+.rag-sort { display: flex; align-items: center; gap: 8px; }
+.rag-sort-label { text-transform: uppercase; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--rag-text-muted); }
+.rag-sort-select { font-size: 0.8rem; font-weight: 600; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--rag-border); background: var(--rag-bg-primary); color: var(--rag-text-primary); }
+.rag-section-title { text-transform: uppercase; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; color: var(--rag-text-muted); margin: 0 0 12px 4px; }
+.rag-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(310px, 100%), 1fr)); gap: 14px; }
+.rag-card { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--rag-bg-primary); border: 1px solid var(--rag-border); border-radius: 12px; }
+.rag-card-image { flex-shrink: 0; width: 80px; height: 80px; border-radius: 8px; background: var(--rag-bg-hover); display: grid; place-items: center; color: var(--rag-border-hover); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; }
+.rag-card-content { flex: 1; min-width: 0; }
+.rag-card-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.rag-card-title { font-size: 1.05rem; font-weight: 600; color: var(--rag-text-heading); margin: 0; line-height: 1.3; }
+.rag-card-discount { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 6px; border-radius: 4px; color: var(--rag-text-on-accent); background: var(--rag-accent); }
+.rag-card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.rag-card-vendor { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--rag-text-muted); }
+.rag-card-price { margin-left: auto; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; }
+.rag-card-price .on { color: var(--rag-accent); } .rag-card-price .off { color: var(--rag-border-hover); }
+.rag-card-vehicles { display: flex; gap: 4px; margin-top: 6px; }
+.rag-vehicle-badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 6px; border-radius: 4px; color: var(--rag-accent); background: color-mix(in srgb, var(--rag-accent) 14%, transparent); }
+.rag-card-arrow { color: var(--rag-text-muted); }
+@media (max-width: 480px) { .rag-container { padding: 20px 12px 32px; } .rag-card-image { width: 64px; height: 64px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+    <div class="mock-bar">
+        <h1 class="mock-title">Affiliate panel <span>· riviantrackr.com/rivian-accessories</span></h1>
+        <div class="seg" role="group" aria-label="Compare versions">
+            <button type="button" id="seg-current" aria-pressed="false" data-view="current">Current</button>
+            <button type="button" id="seg-proposed" aria-pressed="true" data-view="proposed">Proposed</button>
+        </div>
+    </div>
+
+    <ul class="notes" id="notes-proposed">
+        <li><b>One row shape for every vendor.</b> Monogram, name, offer, then actions. No more centered names for vendors without an offer note.</li>
+        <li><b>3 columns on desktop, 9 fills exactly.</b> Rows are 58px instead of 110px, so the panel is about 40% shorter and the guide stays above the fold.</li>
+        <li><b>The code is the hero.</b> Shop becomes a quiet icon button that fills orange on hover. Vendors with no code get a labeled Shop button so the slot is never empty.</li>
+        <li><b>Phone shows 4, then "Show all".</b> Readers reach the products quickly and can still expand the full list.</li>
+    </ul>
+    <ul class="notes" id="notes-current" hidden>
+        <li><b>Orphan slot.</b> 9 vendors in 5 columns leaves one empty cell.</li>
+        <li><b>Two card layouts.</b> Vendors without an offer note center the name beside the button.</li>
+        <li><b>18 orange elements.</b> Nine Shop buttons and nine code chips compete with the product cards.</li>
+        <li><b>Case mismatch.</b> EveryAmp's code is lowercase; everyone else is uppercase.</li>
+    </ul>
+
+    <div class="rag-container">
+
+        <!-- ================= CURRENT ================= -->
+        <section class="cur-panel" id="view-current" hidden aria-label="Current affiliate panel">
+            <h2 class="cur-title">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8.5V3.25c0-.41.34-.75.75-.75H8.5l5 5-5.25 5.25-5.75-5.75z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="5.75" cy="5.75" r="1" fill="currentColor"/></svg>
+                Affiliate Links &amp; Codes
+            </h2>
+            <ul class="cur-list" id="cur-list"></ul>
+        </section>
+
+        <!-- ================= PROPOSED ================= -->
+        <section class="aff" id="view-proposed" aria-label="Affiliate links and codes">
+            <div class="aff-head">
+                <div>
+                    <h2 class="aff-title">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8.5V3.25c0-.41.34-.75.75-.75H8.5l5 5-5.25 5.25-5.75-5.75z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="5.75" cy="5.75" r="1" fill="currentColor"/></svg>
+                        Affiliate Links &amp; Codes
+                    </h2>
+                    <p class="aff-sub">Tap a code to copy it, then enter it at checkout. Most stores take <b>RIVIANTRACKR</b>.</p>
+                </div>
+                <span class="aff-count">9 partners</span>
+            </div>
+            <ul class="aff-list is-collapsed" id="aff-list"></ul>
+            <button type="button" class="aff-more" id="aff-more" aria-expanded="false" aria-controls="aff-list">Show all 9 partners</button>
+        </section>
+
+        <!-- Context below the panel -->
+        <div class="rag-filter-toggle">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Filters
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="rag-toolbar">
+            <span><b>43</b> accessories</span>
+            <span class="rag-sort"><span class="rag-sort-label">Sort</span><span class="rag-sort-select">Featured ▾</span></span>
+        </div>
+        <h3 class="rag-section-title">Charging</h3>
+        <div class="rag-cards" id="cards"></div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var vendors = [
+        { name: 'A2Z EV', note: '10% off', code: 'RIVIANTRACKR', url: '#' },
+        { name: 'Abstract Ocean', note: '10% off select products', code: 'RIVIANTRACKR', url: '#' },
+        { name: 'BestEvMod', note: '', code: '', url: '#' },
+        { name: 'electruck4x4', note: '5% off select products', code: 'RIVIANTRACKR', url: '#' },
+        { name: 'EV Sportline', note: '', code: '', url: '#' },
+        { name: 'EveryAmp', note: '10% off', code: 'riviantrackr', url: '#' },
+        { name: 'Mars Roamer', note: '', code: 'RIVIANTRACKR', url: '' },
+        { name: 'SoonishEV', note: '10% off select products', code: 'RIVIANTRACKR', url: '#' },
+        { name: 'VION', note: '10% off', code: 'RIVIANTRACKRLLC', url: '#' }
+    ];
+
+    var copyIcon = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.75A1.25 1.25 0 009.25 2.5h-5.5A1.25 1.25 0 002.5 3.75v5.5a1.25 1.25 0 001.25 1.25H5.5" stroke="currentColor" stroke-width="1.5"/></svg>';
+    var outIcon = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6.5 3.5H3.5a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1V9.5M9.5 2.5h4v4M13.5 2.5L7.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var chev = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    // Current panel (replica).
+    document.getElementById('cur-list').innerHTML = vendors.map(function (v) {
+        return '<li class="cur-item"><div class="cur-info"><span class="cur-name">' + esc(v.name) + '</span>' +
+            (v.note ? '<span class="cur-note">' + esc(v.note) + '</span>' : '') + '</div><div class="cur-actions">' +
+            (v.code ? '<button type="button" class="cur-code"><small>Code</small><b>' + esc(v.code) + '</b>' + copyIcon + '</button>' : '') +
+            (v.url ? '<a class="cur-shop" href="' + esc(v.url) + '">Shop ' + chev + '</a>' : '') + '</div></li>';
+    }).join('');
+
+    // Proposed panel.
+    document.getElementById('aff-list').innerHTML = vendors.map(function (v) {
+        var shopLabel = v.code ? '' : 'Shop';
+        var shop = v.url
+            ? '<a class="aff-shop' + (shopLabel ? ' is-wide' : '') + '" href="' + esc(v.url) + '" aria-label="Shop ' + esc(v.name) + '" title="Shop ' + esc(v.name) + '">' + (shopLabel ? shopLabel + ' ' : '') + outIcon + '</a>'
+            : '';
+        var code = v.code
+            ? '<button type="button" class="aff-code" data-code="' + esc(v.code) + '" aria-label="Copy code ' + esc(v.code) + '"><span class="aff-code-value">' + esc(v.code) + '</span><span class="aff-copied">Copied</span>' + copyIcon + '</button>'
+            : '';
+        return '<li class="aff-row"><span class="aff-mono" aria-hidden="true">' + esc(v.name.charAt(0).toUpperCase()) + '</span>' +
+            '<div class="aff-info"><span class="aff-name">' + esc(v.name) + '</span><span class="aff-note' + (v.note ? '' : ' is-empty') + '">' + esc(v.note || (v.code ? 'Use code at checkout' : 'Affiliate link')) + '</span></div>' +
+            '<div class="aff-actions">' + code + shop + '</div></li>';
+    }).join('');
+
+    // Products below (context only).
+    var products = [
+        ['CCS1 Charger to NACS', 'A2Z', '10% off', 2, ['R1S', 'R1T', 'R2']],
+        ['EVIQO Level 2 EV Charger (40A, J1772)', 'EVIQO', '', 3, ['R1S', 'R1T']],
+        ['EVIQO Level 2 EV Charger (40A, NACS)', 'EVIQO', '', 3, ['R1S', 'R1T', 'R2']],
+        ['J1772 Charger to NACS', 'A2Z', '10% off', 1, ['R1S', 'R1T', 'R2']],
+        ['NACS Charger to CCS1', 'A2Z', '10% off', 3, ['R1S', 'R1T']]
+    ];
+    document.getElementById('cards').innerHTML = products.map(function (p) {
+        var price = '';
+        for (var i = 1; i <= 4; i++) { price += '<span class="' + (i <= p[3] ? 'on' : 'off') + '">$</span>'; }
+        return '<div class="rag-card"><div class="rag-card-image">IMG</div><div class="rag-card-content"><div class="rag-card-heading"><h4 class="rag-card-title">' + esc(p[0]) + '</h4>' +
+            (p[2] ? '<span class="rag-card-discount">' + esc(p[2]) + '</span>' : '') + '</div><div class="rag-card-meta"><span class="rag-card-vendor">' + esc(p[1]) + '</span><span class="rag-card-price">' + price + '</span></div>' +
+            '<div class="rag-card-vehicles">' + p[4].map(function (b) { return '<span class="rag-vehicle-badge">' + b + '</span>'; }).join('') + '</div></div><span class="rag-card-arrow">' + chev + '</span></div>';
+    }).join('');
+
+    // Toggle.
+    var segs = document.querySelectorAll('.seg button');
+    function show(view) {
+        segs.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-view') === view ? 'true' : 'false'); });
+        document.getElementById('view-current').hidden = view !== 'current';
+        document.getElementById('view-proposed').hidden = view !== 'proposed';
+        document.getElementById('notes-current').hidden = view !== 'current';
+        document.getElementById('notes-proposed').hidden = view !== 'proposed';
+    }
+    segs.forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-view')); }); });
+    if (location.hash === '#current') { show('current'); }
+
+    // Copy.
+    function fallbackCopy(text) {
+        var el = document.createElement('textarea'); el.value = text; el.setAttribute('readonly', '');
+        el.style.position = 'absolute'; el.style.left = '-9999px'; document.body.appendChild(el); el.select();
+        var ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(el); return ok;
+    }
+    document.querySelectorAll('.aff-code').forEach(function (btn) {
+        var timer = null;
+        btn.addEventListener('click', function () {
+            var code = btn.getAttribute('data-code') || '';
+            var done = function () {
+                btn.classList.add('is-copied');
+                if (timer) { clearTimeout(timer); }
+                timer = setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(done, function () { fallbackCopy(code); done(); });
+            } else { fallbackCopy(code); done(); }
+        });
+    });
+
+    // Mobile show-all.
+    var more = document.getElementById('aff-more');
+    var list = document.getElementById('aff-list');
+    more.addEventListener('click', function () {
+        var collapsed = list.classList.toggle('is-collapsed');
+        more.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        more.textContent = collapsed ? 'Show all 9 partners' : 'Show fewer';
+    });
+})();
+</script>

@@ -2,6 +2,31 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.8.1 — 2026-10-07
+
+### Changed
+- Affiliate panel redesigned as compact rows (1 column on phones, 2 on
+  tablets, 3 on desktop) with a single anatomy for every partner: monogram
+  tile, name, offer line, then actions. Partners without an offer note show
+  "Use code at checkout" or "Affiliate link" so rows never collapse to a
+  different shape. Rows are about half the height of the previous cards.
+- The promo code is now the only highlighted element in each row. Shop is a
+  quiet icon button that fills on hover, and only gets a text label when the
+  partner has no code.
+- Codes display in uppercase for consistency; the copy button still copies
+  the exact text entered in admin.
+- Panel header gains a subtitle ("Tap a code to copy it, then enter it at
+  checkout", plus the shared code when most partners use the same one) and
+  a partner count. Override with `affiliates_subtitle="..."` on
+  `[rivian_accessories]` or `subtitle="..."` on `[rivian_affiliate_links]`;
+  pass an empty string to hide it.
+- On phones the panel shows four partners and a "Show all N partners"
+  button when there are more than five.
+
+### Fixed
+- The Filters button showed a "0" badge when no filters were active. The
+  badge's `display: inline-flex` rule overrode the `hidden` attribute.
+
 ## 1.8.0 — 2026-10-07
 
 ### Added
