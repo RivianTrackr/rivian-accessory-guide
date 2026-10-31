@@ -125,10 +125,10 @@ class RAG_Shortcode {
             wp_reset_postdata();
 
             $price_labels = array(
-                1 => 'Budget — under $50',
-                2 => 'Moderate — $50 to $150',
-                3 => 'Premium — $150 to $500',
-                4 => 'Splurge — $500+',
+                1 => 'Budget, under $50',
+                2 => 'Moderate, $50 to $150',
+                3 => 'Premium, $150 to $500',
+                4 => 'Splurge, $500+',
             );
             ?>
 
@@ -356,10 +356,10 @@ class RAG_Shortcode {
     private static function render_price_tier( $tier ) {
         $tier   = max( 1, min( 4, (int) $tier ) );
         $labels = array(
-            1 => 'Budget — under $50',
-            2 => 'Moderate — $50 to $150',
-            3 => 'Premium — $150 to $500',
-            4 => 'Splurge — $500+',
+            1 => 'Budget, under $50',
+            2 => 'Moderate, $50 to $150',
+            3 => 'Premium, $150 to $500',
+            4 => 'Splurge, $500+',
         );
         $label = $labels[ $tier ];
 

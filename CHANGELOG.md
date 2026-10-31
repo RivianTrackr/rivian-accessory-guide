@@ -2,6 +2,14 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.8.2 - 2026-10-31
+
+### Changed
+- Muted text moves from `#79766f` (3.9:1 on cards) to `#8f8c85` (at least 4.75:1 on every surface).
+- Card discounts and vehicle badges move from 10.4px to 11px.
+- Affiliate code and shop buttons reach 40px tall.
+- Price tier labels drop their em dashes.
+
 ## 1.8.1 — 2026-10-07
 
 ### Changed
