@@ -2,6 +2,13 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.9.0 - 2026-11-16
+
+### Added
+- Site light mode. When RivianTrackr's color modes set `data-rt-theme="light"` on `<html>`, the guide switches to light surfaces and ink text. Without the attribute nothing changes.
+- `--rag-accent-text` and `--rag-accent-text-hover`. Gold used as text goes through them, so light mode swaps it for brass (`#8a5800`) while buttons and badges keep the gold fill.
+- `--rag-shadow-pop` for the one hard-coded shadow, softer in light mode.
+
 ## 1.8.2 - 2026-10-31
 
 ### Changed
