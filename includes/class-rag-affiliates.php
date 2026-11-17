@@ -152,7 +152,7 @@ class RAG_Affiliates {
 	 */
 	public static function shortcode( $atts ) {
 		$atts = shortcode_atts( array(
-			'title'    => 'Affiliate Links & Codes',
+			'title'    => 'Affiliate links and codes',
 			'subtitle' => 'auto',
 		), $atts, 'rivian_affiliate_links' );
 
@@ -203,7 +203,7 @@ class RAG_Affiliates {
 	 *                         empty hides it, anything else is shown as-is.
 	 * @return string
 	 */
-	public static function render_panel( $items, $title = 'Affiliate Links & Codes', $subtitle = 'auto' ) {
+	public static function render_panel( $items, $title = 'Affiliate links and codes', $subtitle = 'auto' ) {
 		if ( empty( $items ) ) {
 			return '';
 		}

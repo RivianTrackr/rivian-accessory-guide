@@ -2,6 +2,13 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.9.1 - 2026-11-17
+
+### Changed
+- Labels in sentence case: section titles, filter and sort labels, vendor names, discount and vehicle badges, the "Copied" note and the affiliate panel title no longer use uppercase with wide letter spacing. Anything under 12px moves to 12px. Coupon code values stay as typed.
+- The affiliate panel's default title is "Affiliate links and codes".
+- Cards no longer lift on hover; the border, shadow and background change stays.
+
 ## 1.9.0 - 2026-11-16
 
 ### Added
