@@ -18,21 +18,19 @@ export function initCardLinks() {
 }
 
 /**
- * Wire up the filter chips (vehicle / category / price), the sort control, and
- * the live result count.
+ * Wire up the filter pills (vehicle / category), the sort menu, and the live
+ * result count.
  *
- * Each chip row is a `.rag-filter-bar` marked with `data-filter`
- * ("vehicle" | "category" | "price"); chips carry their value in `data-value`
+ * Each pill row is a `.rag-filter-bar` marked with `data-filter`
+ * ("vehicle" | "category"); pills carry their value in `data-value`
  * ("all" clears that row). Filters combine with AND logic:
  *
  *   - Vehicle: matches when "all", the card lists the vehicle, or the card has
  *     no vehicles (universal).
- *   - Category: a section matches when "all" or its `data-category` equals the
- *     selection.
- *   - Price: matches when "all" or the card's `data-price` tier equals the
- *     selection. Cards with no tier are hidden while a specific price is active.
+ *   - Category: matches when "all" or the card's `data-category` list holds
+ *     the selection ("uncategorized" for cards with no category).
  *
- * Sorting happens within each category section (the groups stay intact).
+ * All cards sit in one `.rag-cards` grid; sorting reorders it in place.
  */
 export function initFilters() {
     const container = document.querySelector('.rag-container');
@@ -40,24 +38,21 @@ export function initFilters() {
         return;
     }
 
-    const sections = Array.from(container.querySelectorAll('.rag-section'));
+    const grid = container.querySelector('.rag-cards');
+    if (!grid) {
+        return;
+    }
+
     const bars = Array.from(container.querySelectorAll('.rag-filter-bar'));
     const sortSelect = container.querySelector('[data-sort]');
     const emptyMsg = container.querySelector('.rag-filter-empty');
     const countNum = container.querySelector('.rag-count-num');
-    const filtersEl = container.querySelector('.rag-filters');
-    const toggle = container.querySelector('.rag-filter-toggle');
-    const toggleCount = container.querySelector('.rag-filter-toggle-count');
-    const state = { vehicle: 'all', category: 'all', price: 'all', sort: 'default' };
+    const state = { vehicle: 'all', category: 'all', sort: 'default' };
 
-    // Remember each section's original card order so "Featured" can be restored.
-    const originalOrder = new Map();
-    sections.forEach((section) => {
-        const grid = section.querySelector('.rag-cards');
-        if (grid) {
-            originalOrder.set(grid, Array.from(grid.querySelectorAll('.rag-card')));
-        }
-    });
+    // Remember the original card order so "Featured" can be restored.
+    const originalOrder = Array.from(grid.querySelectorAll('.rag-card'));
+
+    const list = (card, attr) => (card.getAttribute(attr) || '').split(/\s+/).filter(Boolean);
 
     const sortCards = (cards) => {
         const tier = (card) => parseInt(card.getAttribute('data-price'), 10) || 0;
@@ -83,32 +78,17 @@ export function initFilters() {
     const apply = () => {
         let visibleCount = 0;
 
-        sections.forEach((section) => {
-            const sectionCat = section.getAttribute('data-category') || '';
-            const catMatch = state.category === 'all' || sectionCat === state.category;
-            const grid = section.querySelector('.rag-cards');
-            const cards = grid ? sortCards(originalOrder.get(grid) || []) : [];
-            let hasVisible = false;
-
-            cards.forEach((card) => {
-                const vehicles = (card.getAttribute('data-vehicles') || '').split(/\s+/).filter(Boolean);
-                const vehMatch = state.vehicle === 'all' || vehicles.length === 0 || vehicles.includes(state.vehicle);
-                const price = card.getAttribute('data-price') || '';
-                const priceMatch = state.price === 'all' || price === state.price;
-                const show = catMatch && vehMatch && priceMatch;
-                card.hidden = !show;
-                if (show) {
-                    hasVisible = true;
-                    visibleCount += 1;
-                }
-                // Re-append in sorted order (no-ops when already in place).
-                if (grid) {
-                    grid.appendChild(card);
-                }
-            });
-
-            // Hide a section when its category is filtered out or it has no matching cards.
-            section.hidden = !(catMatch && hasVisible);
+        sortCards(originalOrder).forEach((card) => {
+            const vehicles = list(card, 'data-vehicles');
+            const vehMatch = state.vehicle === 'all' || vehicles.length === 0 || vehicles.includes(state.vehicle);
+            const catMatch = state.category === 'all' || list(card, 'data-category').includes(state.category);
+            const show = vehMatch && catMatch;
+            card.hidden = !show;
+            if (show) {
+                visibleCount += 1;
+            }
+            // Re-append in sorted order (no-ops when already in place).
+            grid.appendChild(card);
         });
 
         if (emptyMsg) {
@@ -116,12 +96,6 @@ export function initFilters() {
         }
         if (countNum) {
             countNum.textContent = String(visibleCount);
-        }
-        if (toggleCount) {
-            // Surface how many filters are active while the panel is collapsed on mobile.
-            const active = ['vehicle', 'category', 'price'].filter((key) => state[key] !== 'all').length;
-            toggleCount.textContent = String(active);
-            toggleCount.hidden = active === 0;
         }
     };
 
@@ -150,15 +124,6 @@ export function initFilters() {
         });
     }
 
-    // Mobile-only collapse/expand. The panel is always visible on desktop via CSS.
-    if (toggle && filtersEl) {
-        toggle.addEventListener('click', () => {
-            const open = filtersEl.classList.toggle('is-open');
-            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-    }
-
-    // Initial pass sets the count and applies the default sort.
     apply();
 }
 
@@ -253,9 +218,32 @@ export function initAffiliateToggle() {
     });
 }
 
+/**
+ * "Show codes" button on the one-line affiliate panel above the grid. Opens
+ * the full partner list in place on every screen size.
+ */
+export function initCompactAffiliates() {
+    document.querySelectorAll('.rag-affiliates-toggle').forEach((button) => {
+        const list = document.getElementById(button.getAttribute('aria-controls') || '');
+        if (!list) {
+            return;
+        }
+        const labels = button.querySelectorAll('[data-closed]');
+        button.addEventListener('click', () => {
+            const open = list.hidden;
+            list.hidden = !open;
+            button.setAttribute('aria-expanded', open ? 'true' : 'false');
+            labels.forEach((el) => {
+                el.textContent = el.getAttribute(open ? 'data-open' : 'data-closed') || '';
+            });
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initCardLinks();
     initFilters();
     initCopyCodes();
     initAffiliateToggle();
+    initCompactAffiliates();
 });
