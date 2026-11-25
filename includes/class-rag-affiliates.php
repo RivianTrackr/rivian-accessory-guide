@@ -169,14 +169,12 @@ class RAG_Affiliates {
 	}
 
 	/**
-	 * Build the default subtitle: a short how-to, plus the shared code when
-	 * most partners take the same one.
+	 * The code most partners share, when one clearly dominates.
 	 *
 	 * @param array $items Entries from get_all().
-	 * @return string HTML (already escaped).
+	 * @return string The code in upper case, or '' when there is none.
 	 */
-	private static function auto_subtitle( $items ) {
-		$html   = esc_html( 'Tap a code to copy it, then enter it at checkout.' );
+	private static function shared_code( $items ) {
 		$counts = array();
 		foreach ( $items as $item ) {
 			if ( '' !== $item['code'] ) {
@@ -184,14 +182,77 @@ class RAG_Affiliates {
 				$counts[ $key ] = ( $counts[ $key ] ?? 0 ) + 1;
 			}
 		}
-		if ( ! empty( $counts ) ) {
-			arsort( $counts );
-			$top = array_key_first( $counts );
-			if ( $counts[ $top ] >= 3 && $counts[ $top ] > count( $items ) / 2 ) {
-				$html .= ' Most stores take <b>' . esc_html( $top ) . '</b>.';
-			}
+		if ( empty( $counts ) ) {
+			return '';
+		}
+		arsort( $counts );
+		$top = array_key_first( $counts );
+		return ( $counts[ $top ] >= 3 && $counts[ $top ] > count( $items ) / 2 ) ? $top : '';
+	}
+
+	/**
+	 * Build the default subtitle: a short how-to, plus the shared code when
+	 * most partners take the same one.
+	 *
+	 * @param array $items Entries from get_all().
+	 * @return string HTML (already escaped).
+	 */
+	private static function auto_subtitle( $items ) {
+		$html = esc_html( 'Tap a code to copy it, then enter it at checkout.' );
+		$top  = self::shared_code( $items );
+		if ( '' !== $top ) {
+			$html .= ' Most stores take <b>' . esc_html( $top ) . '</b>.';
 		}
 		return $html;
+	}
+
+	/**
+	 * Render the one-line panel used above the accessory grid: a summary and
+	 * a button that opens the full partner list in place.
+	 *
+	 * @param array $items Entries from get_all().
+	 * @return string
+	 */
+	public static function render_compact_panel( $items ) {
+		if ( empty( $items ) ) {
+			return '';
+		}
+
+		$count   = count( $items );
+		$top     = self::shared_code( $items );
+		$list_id = 'rag-affiliate-list-' . wp_unique_id();
+		$title   = 1 === $count ? 'Codes and links for 1 partner store' : 'Codes and links for ' . $count . ' partner stores';
+
+		ob_start();
+		?>
+		<section class="rag-affiliates is-compact" aria-label="Affiliate links and codes">
+			<div class="rag-affiliates-bar">
+				<div class="rag-affiliates-heading">
+					<h2 class="rag-affiliates-title"><?php echo esc_html( $title ); ?></h2>
+					<p class="rag-affiliates-subtitle">
+						<?php if ( '' !== $top ) : ?>
+							Most take <span class="rag-affiliates-shared-code"><?php echo esc_html( $top ); ?></span> at checkout.
+						<?php else : ?>
+							Tap a code to copy it, then enter it at checkout.
+						<?php endif; ?>
+					</p>
+				</div>
+				<button type="button" class="rag-affiliates-toggle" aria-expanded="false" aria-controls="<?php echo esc_attr( $list_id ); ?>">
+					<span class="rag-affiliates-toggle-label" data-closed="Show codes" data-open="Hide codes">Show codes</span>
+					<span class="rag-affiliates-toggle-short" data-closed="Show" data-open="Hide">Show</span>
+					<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+						<path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</button>
+			</div>
+			<ul class="rag-affiliate-list" id="<?php echo esc_attr( $list_id ); ?>" hidden>
+				<?php foreach ( $items as $item ) : ?>
+					<?php echo self::render_item( $item ); ?>
+				<?php endforeach; ?>
+			</ul>
+		</section>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
@@ -243,6 +304,26 @@ class RAG_Affiliates {
 			<?php endif; ?>
 			<ul class="rag-affiliate-list<?php echo $collapsible ? ' is-collapsed' : ''; ?>">
 				<?php foreach ( $items as $item ) : ?>
+					<?php echo self::render_item( $item ); ?>
+				<?php endforeach; ?>
+			</ul>
+			<?php if ( $collapsible ) : ?>
+				<button type="button" class="rag-affiliates-more" aria-expanded="false" data-show-all="<?php echo esc_attr( 'Show all ' . $count . ' partners' ); ?>" data-show-fewer="Show fewer">Show all <?php echo esc_html( $count ); ?> partners</button>
+			<?php endif; ?>
+		</section>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render one partner row: monogram, name and offer, copy and shop buttons.
+	 *
+	 * @param array $item Entry from get_all().
+	 * @return string
+	 */
+	private static function render_item( $item ) {
+		ob_start();
+		?>
 					<?php
 					$has_code = '' !== $item['code'];
 					$has_url  = '' !== $item['url'];
@@ -279,12 +360,6 @@ class RAG_Affiliates {
 							<?php endif; ?>
 						</div>
 					</li>
-				<?php endforeach; ?>
-			</ul>
-			<?php if ( $collapsible ) : ?>
-				<button type="button" class="rag-affiliates-more" aria-expanded="false" data-show-all="<?php echo esc_attr( 'Show all ' . $count . ' partners' ); ?>" data-show-fewer="Show fewer">Show all <?php echo esc_html( $count ); ?> partners</button>
-			<?php endif; ?>
-		</section>
 		<?php
 		return ob_get_clean();
 	}

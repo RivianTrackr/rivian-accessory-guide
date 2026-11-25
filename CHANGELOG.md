@@ -2,6 +2,19 @@
 
 All notable changes to the Rivian Accessory Guide plugin.
 
+## 1.10.0 - 2026-11-25
+
+### Changed
+- Cards are redesigned: a large product image on a light plate, then the category, any discount, the name, vendor and fit, the $ to $$$$ tier with its range, the promo code, and a Buy cue. The whole card stays the link. Images load the `medium_large` size instead of the 150px thumbnail.
+- All accessories sit in one grid instead of category sections. Featured keeps the old order (categories by name, then Other), and an accessory in two categories shows once.
+- Filters are two always-visible pill rows, vehicle and category. The selected pill is white on gray, not gold. On phones each row scrolls sideways. The Filters toggle and the price filter are gone. Sort covers price.
+- Sort is a small menu beside the count: Featured, price low to high, price high to low, name A to Z.
+- Phones show two compact columns with a full-width Buy.
+- The affiliate panel above the guide is one line, "Codes and links for N partner stores", with a Show codes button that opens the full list in place. `affiliates_layout="full"` on `[rivian_accessories]` brings back the old panel. `[rivian_affiliate_links]` is unchanged.
+
+### Removed
+- Card descriptions and vehicle badges (fit is now plain text under the name).
+
 ## 1.9.1 - 2026-11-17
 
 ### Changed
